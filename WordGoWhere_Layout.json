@@ -1,0 +1,87 @@
+{
+  "scene": "WordGoWhere",
+  "referenceResolution": { "width": 2000, "height": 2000 },
+  "canvases": [
+{
+      "name": "BG Canvas",
+      "sortingOrder": 0,
+      "renderMode": "ScreenSpaceOverlay",
+      "scaleMode": "ScaleWithScreenSize",
+      "referenceResolution": { "width": 2000, "height": 2000 },
+      "screenMatchMode": "Shrink",
+      "matchWidthOrHeight": 1,
+      "children": [
+{
+          "name": "BG",
+          "type": "Image",
+          "sprite": "bg_blue.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": 0 },
+            "sizeDelta": { "x": 2000, "y": 2000 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": -778.6668, "y": 0 },
+            "center": { "x": 1000, "y": 1000 },
+            "size": { "width": 3557.333, "height": 2000 }
+          }
+        }
+      ]
+    },
+{
+      "name": "Test Canvas",
+      "sortingOrder": 0,
+      "renderMode": "ScreenSpaceOverlay",
+      "scaleMode": "ScaleWithScreenSize",
+      "referenceResolution": { "width": 1080, "height": 1920 },
+      "screenMatchMode": "MatchWidthOrHeight",
+      "matchWidthOrHeight": 1,
+      "children": [
+{
+          "name": "Test Parent",
+          "type": "Image",
+          "sprite": "bg_bluepurp.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": 0 },
+            "sizeDelta": { "x": 500, "y": 500 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 289.875, "y": 710 },
+            "center": { "x": 540, "y": 960 },
+            "size": { "width": 500.25, "height": 500 }
+          },
+          "children": [
+{
+              "name": "Test Child",
+              "type": "Image",
+              "sprite": "bg_bluepurp.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 0 },
+                "sizeDelta": { "x": 250, "y": 250 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 414.9375, "y": 835 },
+                "center": { "x": 540, "y": 960 },
+                "size": { "width": 250.125, "height": 250 }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
