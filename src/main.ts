@@ -3,6 +3,11 @@ import { BootScene } from './scenes/BootScene'
 import { GameScene } from './scenes/GameScene'
 import { recomputeResponsive } from './utils/responsive'
 import { initMraid, bindLifecycle, notifyGameReady } from './networks'
+import { ASSETS, FONT_FAMILY } from './assets'
+
+const fontStyle = document.createElement('style')
+fontStyle.textContent = `@font-face{font-family:'${FONT_FAMILY}';src:url('${ASSETS.balooFont}') format('truetype');font-display:block;}`
+document.head.appendChild(fontStyle)
 
 ;(window as any).gameReady  ??= () => {}
 ;(window as any).gameStart  ??= () => {}
@@ -82,8 +87,12 @@ function startGame(): void {
 }
 
 function boot(): void {
+  const fonts = (document as any).fonts
+  const fontLoad = fonts?.load
+    ? Promise.all([fonts.load(`16px ${FONT_FAMILY}`), fonts.load(`64px ${FONT_FAMILY}`)])
+    : Promise.resolve()
   const fontReady = Promise.race([
-    (document as any).fonts?.ready ?? Promise.resolve(),
+    fontLoad,
     new Promise((r) => setTimeout(r, 1500))
   ])
   Promise.all([initMraid(), fontReady]).then(startGame).catch(startGame)

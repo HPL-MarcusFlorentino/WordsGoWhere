@@ -1,12 +1,37 @@
-import bgBlue from '../Assets/bg_blue.webp'
-import bgBluepurp from '../Assets/bg_bluepurp.webp'
+import background from '../Assets/BG/Background.webp'
+import introLogo from '../Assets/Intro/Intro_Logo.webp'
+import levelCounter from '../Assets/Gameplay/LEVEL 1.webp'
+import movesContainer from '../Assets/Gameplay/Moves_Container.webp'
+import tileSlot from '../Assets/Gameplay/Tile_Slot.webp'
+import tileContainer from '../Assets/Gameplay/Tile_Container.webp'
+import purpleBackTile from '../Assets/Gameplay/Purple_Back_Tile.webp'
+import purpleFrontTile from '../Assets/Gameplay/Purple_Front_Tile.webp'
+import mergedTile from '../Assets/Gameplay/Merged_Tile.webp'
+import balooFont from '../Assets/Font/BALOO-REGULAR.ttf?inline'
 
 export const ASSETS = {
-  bgBlue,
-  bgBluepurp
+  background,
+  introLogo,
+  levelCounter,
+  movesContainer,
+  tileSlot,
+  tileContainer,
+  purpleBackTile,
+  purpleFrontTile,
+  mergedTile,
+  balooFont
 } as const
 
 export const TEX = {
-  bgBlue: 'bg_blue',
-  bgBluepurp: 'bg_bluepurp'
+  background: 'background',
+  introLogo: 'intro_logo',
+  levelCounter: 'level_counter',
+  movesContainer: 'moves_container',
+  tileSlot: 'tile_slot',
+  tileContainer: 'tile_container',
+  purpleBackTile: 'purple_back_tile',
+  purpleFrontTile: 'purple_front_tile',
+  mergedTile: 'merged_tile'
 } as const
+
+export const FONT_FAMILY = 'Baloo'

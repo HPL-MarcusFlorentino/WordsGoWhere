@@ -4,7 +4,7 @@
   "canvases": [
 {
       "name": "BG Canvas",
-      "sortingOrder": 0,
+      "sortingOrder": -9999,
       "renderMode": "ScreenSpaceOverlay",
       "scaleMode": "ScaleWithScreenSize",
       "referenceResolution": { "width": 2000, "height": 2000 },
@@ -14,7 +14,7 @@
 {
           "name": "BG",
           "type": "Image",
-          "sprite": "bg_blue.png",
+          "sprite": "Background.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
@@ -33,7 +33,7 @@
       ]
     },
 {
-      "name": "Test Canvas",
+      "name": "Intro Canvas",
       "sortingOrder": 0,
       "renderMode": "ScreenSpaceOverlay",
       "scaleMode": "ScaleWithScreenSize",
@@ -42,44 +42,431 @@
       "matchWidthOrHeight": 1,
       "children": [
 {
-          "name": "Test Parent",
+          "name": "Intro Logo",
           "type": "Image",
-          "sprite": "bg_bluepurp.png",
+          "sprite": "Intro_Logo.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
             "anchorMin": { "x": 0.5, "y": 0.5 },
             "anchorMax": { "x": 0.5, "y": 0.5 },
             "anchoredPosition": { "x": 0, "y": 0 },
-            "sizeDelta": { "x": 500, "y": 500 },
+            "sizeDelta": { "x": 954.6667, "y": 640.6667 },
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 289.875, "y": 710 },
-            "center": { "x": 540, "y": 960 },
-            "size": { "width": 500.25, "height": 500 }
+            "topLeft": { "x": 0, "y": 1920 },
+            "center": { "x": 0, "y": 1920 },
+            "size": { "width": 0, "height": 0 }
+          }
+        }
+      ]
+    },
+{
+      "name": "Gameplay Canvas",
+      "sortingOrder": 1,
+      "renderMode": "ScreenSpaceOverlay",
+      "scaleMode": "ScaleWithScreenSize",
+      "referenceResolution": { "width": 1080, "height": 1920 },
+      "screenMatchMode": "MatchWidthOrHeight",
+      "matchWidthOrHeight": 1,
+      "children": [
+{
+          "name": "Level Counter",
+          "type": "Image",
+          "sprite": "LEVEL 1.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": 775 },
+            "sizeDelta": { "x": 153.6, "y": 34.4 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 463.1616, "y": 167.7998 },
+            "center": { "x": 540, "y": 184.9998 },
+            "size": { "width": 153.6769, "height": 34.4 }
+          }
+        },
+{
+          "name": "Moves Container",
+          "type": "Image",
+          "sprite": "Moves_Container.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": 664 },
+            "sizeDelta": { "x": 173.6, "y": 152.8 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 453.1566, "y": 219.6 },
+            "center": { "x": 540, "y": 296 },
+            "size": { "width": 173.6868, "height": 152.7999 }
           },
           "children": [
 {
-              "name": "Test Child",
-              "type": "Image",
-              "sprite": "bg_bluepurp.png",
+              "name": "Moves Text",
+              "type": "TextMeshPro",
+              "text": "Moves",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 36,
               "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
-              "preserveAspect": false,
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Top",
+              "wordWrapping": true,
               "rectTransform": {
-                "anchorMin": { "x": 0.5, "y": 0.5 },
-                "anchorMax": { "x": 0.5, "y": 0.5 },
-                "anchoredPosition": { "x": 0, "y": 0 },
-                "sizeDelta": { "x": 250, "y": 250 },
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": -2.2499 },
+                "sizeDelta": { "x": 0, "y": -4.5001 },
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 414.9375, "y": 835 },
-                "center": { "x": 540, "y": 960 },
-                "size": { "width": 250.125, "height": 250 }
+                "topLeft": { "x": 453.1566, "y": 224.0998 },
+                "center": { "x": 540, "y": 298.2499 },
+                "size": { "width": 173.6868, "height": 148.3 }
+              }
+            },
+{
+              "name": "Counter Text",
+              "type": "TextMeshPro",
+              "text": "8",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 85,
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": -20 },
+                "sizeDelta": { "x": 0, "y": -40 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 453.1566, "y": 259.6 },
+                "center": { "x": 540, "y": 316 },
+                "size": { "width": 173.6868, "height": 112.8 }
               }
             }
           ]
+        },
+{
+          "name": "Tile Slot 1",
+          "type": "Image",
+          "sprite": "Tile_Slot.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": -310, "y": 445 },
+            "sizeDelta": { "x": 300, "y": 163 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 79.77, "y": 433.5001 },
+            "center": { "x": 229.845, "y": 515 },
+            "size": { "width": 300.15, "height": 163 }
+          }
+        },
+{
+          "name": "Tile Slot 2",
+          "type": "Image",
+          "sprite": "Tile_Slot.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": 445 },
+            "sizeDelta": { "x": 300, "y": 163 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 389.925, "y": 433.5001 },
+            "center": { "x": 540, "y": 515 },
+            "size": { "width": 300.15, "height": 163 }
+          }
+        },
+{
+          "name": "Tile Slot 3",
+          "type": "Image",
+          "sprite": "Tile_Slot.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 310, "y": 445 },
+            "sizeDelta": { "x": 300, "y": 163 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 700.08, "y": 433.5001 },
+            "center": { "x": 850.155, "y": 515 },
+            "size": { "width": 300.15, "height": 163 }
+          }
+        },
+{
+          "name": "Tile Slot 4",
+          "type": "Image",
+          "sprite": "Tile_Slot.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": -310, "y": 235 },
+            "sizeDelta": { "x": 300, "y": 163 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 79.77, "y": 643.4999 },
+            "center": { "x": 229.845, "y": 725 },
+            "size": { "width": 300.15, "height": 163 }
+          }
+        },
+{
+          "name": "Tile Slot 5",
+          "type": "Image",
+          "sprite": "Tile_Slot.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": 235 },
+            "sizeDelta": { "x": 300, "y": 163 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 389.925, "y": 643.4999 },
+            "center": { "x": 540, "y": 725 },
+            "size": { "width": 300.15, "height": 163 }
+          }
+        },
+{
+          "name": "Tile Slot 6",
+          "type": "Image",
+          "sprite": "Tile_Slot.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 310, "y": 235 },
+            "sizeDelta": { "x": 300, "y": 163 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 700.08, "y": 643.4999 },
+            "center": { "x": 850.155, "y": 725 },
+            "size": { "width": 300.15, "height": 163 }
+          }
+        },
+{
+          "name": "Tile Container",
+          "type": "Image",
+          "sprite": "Tile_Container.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": -425 },
+            "sizeDelta": { "x": 888.6667, "y": 564.6667 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 95.4445, "y": 1102.667 },
+            "center": { "x": 540, "y": 1385 },
+            "size": { "width": 889.1111, "height": 564.6668 }
+          }
+        },
+{
+          "name": "Purple Front Tile - Small",
+          "type": "Image",
+          "sprite": "Purple_Front_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "active": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": -498.8 },
+            "sizeDelta": { "x": 252, "y": 189.3333 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 413.937, "y": 1364.133 },
+            "center": { "x": 540, "y": 1458.8 },
+            "size": { "width": 252.126, "height": 189.3333 }
+          }
+        },
+{
+          "name": "Purple Front Tile - Long",
+          "type": "Image",
+          "sprite": "Merged_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": 0 },
+            "sizeDelta": { "x": 308, "y": 172 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 385.923, "y": 874 },
+            "center": { "x": 540, "y": 960 },
+            "size": { "width": 308.154, "height": 172 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "BREAD",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 55,
+              "color": { "r": 0.2453, "g": 0.2453, "b": 0.2453, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 385.923, "y": 874 },
+                "center": { "x": 540, "y": 945 },
+                "size": { "width": 308.154, "height": 142 }
+              }
+            }
+          ]
+        },
+{
+          "name": "Purple Back Tile",
+          "type": "Image",
+          "sprite": "Purple_Back_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": -280 },
+            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 411.269, "y": 1142.333 },
+            "center": { "x": 540, "y": 1240 },
+            "size": { "width": 257.4621, "height": 195.3332 }
+          }
+        },
+{
+          "name": "Purple Back Tile (1)",
+          "type": "Image",
+          "sprite": "Purple_Back_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": -580 },
+            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 411.269, "y": 1442.333 },
+            "center": { "x": 540, "y": 1540 },
+            "size": { "width": 257.4621, "height": 195.3333 }
+          }
+        },
+{
+          "name": "Purple Back Tile (2)",
+          "type": "Image",
+          "sprite": "Purple_Back_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": -245, "y": -366 },
+            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 166.1465, "y": 1228.333 },
+            "center": { "x": 294.8775, "y": 1326 },
+            "size": { "width": 257.462, "height": 195.3332 }
+          }
+        },
+{
+          "name": "Purple Back Tile (3)",
+          "type": "Image",
+          "sprite": "Purple_Back_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 245, "y": -366 },
+            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 656.3914, "y": 1228.333 },
+            "center": { "x": 785.1224, "y": 1326 },
+            "size": { "width": 257.4621, "height": 195.3332 }
+          }
+        },
+{
+          "name": "Purple Back Tile (4)",
+          "type": "Image",
+          "sprite": "Purple_Back_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": -245, "y": -525 },
+            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 166.1465, "y": 1387.333 },
+            "center": { "x": 294.8775, "y": 1485 },
+            "size": { "width": 257.462, "height": 195.3333 }
+          }
+        },
+{
+          "name": "Purple Back Tile (5)",
+          "type": "Image",
+          "sprite": "Purple_Back_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 245, "y": -525 },
+            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 656.3914, "y": 1387.333 },
+            "center": { "x": 785.1224, "y": 1485 },
+            "size": { "width": 257.4621, "height": 195.3333 }
+          }
         }
       ]
     }
