@@ -5,21 +5,52 @@ import type { GameplayLayout, GameplayTile, SlotInfo } from './GameplayLayout'
 
 const VALID_WORDS = ['RAINBOW', 'SUN', 'CLOUD', 'APPLE', 'MANGO', 'ORANGE']
 
+const CATEGORY_SKY = new Set(['RAINBOW', 'CLOUD', 'SUN'])
+const CATEGORY_FRUITS = new Set(['ORANGE', 'APPLE', 'MANGO'])
+
+const PHASE2_SWAP_DURATION = 280
+const PHASE2_RETURN_DURATION = 180
+const SNAKE_PER_TILE_DURATION = 260   // up + down ms per tile (yoyo'd)
+const SNAKE_STAGGER = 140
+const SNAKE_SCALE_PEAK = 1.25
+
+// Category bar that appears after the row's snake animation, anchored on the
+// row's left edge, and stretches rightward covering the full row.
+const CATEGORY_BAR_DESIGN_W = 960
+const CATEGORY_BAR_DESIGN_H = 170
+const CATEGORY_BAR_LEFT_DX = 60              // design-x of bar's left edge (origin 0, 0.5)
+const CATEGORY_BAR_START_SCALE_X_MULT = 0.05 // fraction of full width at spawn
+const CATEGORY_BAR_DURATION = 620
+const CATEGORY_TITLE_FONT_SIZE = 62
+const CATEGORY_WORDS_FONT_SIZE = 32
+const CATEGORY_TITLE_COLOR = '#ffffff'
+const CATEGORY_WORDS_COLOR = '#c8cdd6'   // slightly cooler/dimmer than pure white
+// Offsets from the bar's geometric center. The bar art has a drop shadow
+// on the bottom, so the visual center of the button face sits above geometric
+// center — both text offsets are nudged upward to compensate.
+const CATEGORY_TITLE_OFFSET_Y = -42
+const CATEGORY_WORDS_OFFSET_Y = 20
+
 const GLOW_SIZE = { w: 232, h: 180 }
 const GLOW_OFFSET_Y = -4.5
+const HOVER_TEXT_COLOR = '#FFD645'
+const TILE_TEXT_COLOR = '#3f3f3f'
 const MERGED_TILE_SIZE = { w: 300, h: 163 }
 const MERGED_TEXT_FONT_SIZE = 64
+const MERGED_TEXT_MAX_WIDTH = 240  // design px — shrink font if label exceeds this
 const MERGED_TEXT_COLOR = '#3f3f3f'
-const MERGED_TEXT_OFFSET_Y = -6
+const MERGED_TEXT_OFFSET_Y = -12
 
-const RED_FLASH_DURATION = 260
+const SHAKE_DURATION = 450
+const SHAKE_AMPLITUDE = 18   // design px peak displacement
+const SHAKE_CYCLES = 3.5     // half-oscillations end at 0 when 3.5 full cycles
 const MERGE_SPREAD_DURATION = 220
 const MERGE_CLASH_DURATION = 180
-const MERGE_SQUISH_SHOW = 120
-const MERGE_STRETCH = 260
-const MERGE_SETTLE = 160
-const CTOSLOT_DURATION = 520
-const SLOT_LAND_SQUASH = 140
+const MERGE_SQUISH_SHOW = 70
+const MERGE_STRETCH = 150
+const MERGE_SETTLE = 100
+const CTOSLOT_DURATION = 320
+const SLOT_LAND_SQUASH = 90
 
 // Impact-scale sequence for the merged tile appearing at the anchor:
 // starts horizontally squished (side-impact), stretches wide, settles to 1.
@@ -37,12 +68,26 @@ const TILE2_DESIGN_Y = 950
 const MERGE_ANCHOR_DESIGN_X = 540  // merge point (green)
 const MERGE_ANCHOR_DESIGN_Y = 850
 
-// Debug crosshairs for adjusting the three fixed points above.
-const DEBUG_MERGE_PATHS = true
-
 const FLIP_DOWN_DURATION = 140
 const FLIP_UP_DURATION = 160
 const FLIP_JUMP_HEIGHT = 70
+
+// Merge burst VFX (design px / ms)
+const BURST_FLASH_START_R = 40
+const BURST_FLASH_END_SCALE = 3.2
+const BURST_FLASH_DURATION = 320
+const BURST_RING_START_R = 60
+const BURST_RING_THICKNESS = 14
+const BURST_RING_END_SCALE = 3.4
+const BURST_RING_DURATION = 520
+const BURST_RING_DELAY = 40
+const BURST_STAR_COUNT = 9
+const BURST_STAR_SIZE_MIN = 16
+const BURST_STAR_SIZE_MAX = 34
+const BURST_STAR_DIST_MIN = 70
+const BURST_STAR_DIST_MAX = 150
+const BURST_STAR_DURATION_MIN = 420
+const BURST_STAR_DURATION_MAX = 620
 
 type DragState = {
   tile: GameplayTile
@@ -74,6 +119,30 @@ type MergedVisual = {
   designH: number
   fontSize: number
   textOffsetY: number
+  slotIndex: number
+  word: string
+  locked: boolean
+}
+
+type Phase2Drag = {
+  mv: MergedVisual
+  pointerStartX: number
+  pointerStartY: number
+  containerStartX: number
+  containerStartY: number
+  hoverTarget: MergedVisual | null
+}
+
+// Category-bar state — everything is stored in design space so relayout()
+// can re-project cleanly after an orientation flip. `s` is the current tween
+// progress (CATEGORY_BAR_START_SCALE_X_MULT..1) and drives both the bar's
+// horizontal growth and the accompanying text scale.
+type CategoryBar = {
+  bar: Phaser.GameObjects.Image
+  title: Phaser.GameObjects.Text
+  words: Phaser.GameObjects.Text
+  rowDesignY: number
+  s: number
 }
 
 export class TileInteraction {
@@ -84,9 +153,12 @@ export class TileInteraction {
   private mergeInProgress = false
   private faceUp = new Set<GameplayTile>()
   private topsRevealed = false
-  private debugGfx: Phaser.GameObjects.Graphics | null = null
   private mergingTiles: MergingTile[] = []
   private mergedVisuals: MergedVisual[] = []
+  private phase2Enabled = false
+  private phase2Swapping = false
+  private phase2Drag: Phase2Drag | null = null
+  private categoryBars: CategoryBar[] = []
 
   constructor(private scene: Phaser.Scene, private layout: GameplayLayout) {}
 
@@ -95,11 +167,26 @@ export class TileInteraction {
       mt.container.setPosition(sx(mt.designX), sy(mt.designY))
     }
     for (const mv of this.mergedVisuals) this.applyMergedVisual(mv)
-    this.redrawDebug()
+    for (const cb of this.categoryBars) this.applyCategoryBar(cb)
+  }
+
+  private applyCategoryBar(cb: CategoryBar): void {
+    const offY = this.layout.getSlotsYOffset()
+    const s = cb.s
+    const rowY = sy(cb.rowDesignY + offY)
+    cb.bar.setPosition(sx(CATEGORY_BAR_LEFT_DX), rowY)
+    cb.bar.setDisplaySize(sd(CATEGORY_BAR_DESIGN_W * s), sd(CATEGORY_BAR_DESIGN_H))
+    const centerDX = CATEGORY_BAR_LEFT_DX + CATEGORY_BAR_DESIGN_W * s / 2
+    const cx = sx(centerDX)
+    cb.title.setPosition(cx, sy(cb.rowDesignY + offY + CATEGORY_TITLE_OFFSET_Y * s))
+    cb.title.setFontSize(sd(CATEGORY_TITLE_FONT_SIZE * s))
+    cb.words.setPosition(cx, sy(cb.rowDesignY + offY + CATEGORY_WORDS_OFFSET_Y * s))
+    cb.words.setFontSize(sd(CATEGORY_WORDS_FONT_SIZE * s))
   }
 
   private applyMergedVisual(mv: MergedVisual): void {
-    mv.container.setPosition(sx(mv.designX), sy(mv.designY))
+    const yOff = this.layout.getSlotsYOffset()
+    mv.container.setPosition(sx(mv.designX), sy(mv.designY + yOff))
     mv.img.setDisplaySize(sd(mv.designW), sd(mv.designH))
     mv.label.setPosition(0, sd(mv.textOffsetY))
     mv.label.setFontSize(sd(mv.fontSize))
@@ -120,32 +207,6 @@ export class TileInteraction {
     this.scene.input.on('pointermove', (p: Phaser.Input.Pointer) => this.onPointerMove(p))
     this.scene.input.on('pointerup', (p: Phaser.Input.Pointer) => this.onPointerUp(p))
     this.scene.input.on('pointerupoutside', (p: Phaser.Input.Pointer) => this.onPointerUp(p))
-
-    if (DEBUG_MERGE_PATHS) this.initDebugGfx()
-  }
-
-  private initDebugGfx(): void {
-    this.debugGfx = this.scene.add.graphics()
-    this.layout.getRoot().add(this.debugGfx)
-    this.layout.getRoot().bringToTop(this.debugGfx)
-    this.redrawDebug()
-  }
-
-  private drawCrosshair(x: number, y: number, color: number): void {
-    if (!this.debugGfx) return
-    const g = this.debugGfx
-    g.lineStyle(sd(3), color, 0.9)
-    g.strokeCircle(x, y, sd(18))
-    g.lineBetween(x - sd(28), y, x + sd(28), y)
-    g.lineBetween(x, y - sd(28), x, y + sd(28))
-  }
-
-  private redrawDebug(): void {
-    if (!this.debugGfx) return
-    this.debugGfx.clear()
-    this.drawCrosshair(sx(TILE1_DESIGN_X), sy(TILE1_DESIGN_Y), 0xff3030)         // red — tile 1 spread dest
-    this.drawCrosshair(sx(TILE2_DESIGN_X), sy(TILE2_DESIGN_Y), 0x30a0ff)         // blue — tile 2 spread dest
-    this.drawCrosshair(sx(MERGE_ANCHOR_DESIGN_X), sy(MERGE_ANCHOR_DESIGN_Y), 0x00ff00)  // green — merge point
   }
 
   private applyHitArea(tile: GameplayTile): void {
@@ -243,11 +304,12 @@ export class TileInteraction {
     const root = this.layout.getRoot()
     const originalIndex = root.getIndex(tile.container)
 
-    const glow = this.scene.add.image(tile.container.x, tile.container.y + sd(GLOW_OFFSET_Y), TEX.selectionGreen)
-      .setOrigin(0.5, 0.5)
-      .setDepth(tile.container.depth + 1)
+    // Parent the glow to the tile container so it inherits position/scale
+    // animations (drag, returnToRest, merge). Appended last = on top of the
+    // tile's face/back/label children.
+    const glow = this.scene.add.image(0, sd(GLOW_OFFSET_Y), TEX.selectionGreen).setOrigin(0.5, 0.5)
     glow.setDisplaySize(sd(GLOW_SIZE.w), sd(GLOW_SIZE.h))
-    root.add(glow)
+    tile.container.add(glow)
     root.bringToTop(tile.container)
 
     this.drag = {
@@ -264,26 +326,27 @@ export class TileInteraction {
   }
 
   private onPointerMove(p: Phaser.Input.Pointer): void {
+    if (this.phase2Drag) { this.onPhase2PointerMove(p); return }
     if (!this.drag) return
     const d = this.drag
     const dx = p.x - d.pointerStartX
     const dy = p.y - d.pointerStartY
     d.tile.container.setPosition(d.tileStartX + dx, d.tileStartY + dy)
-    d.glow.setPosition(d.tile.container.x, d.tile.container.y + sd(GLOW_OFFSET_Y))
 
     const target = this.findHoverTarget(p.x, p.y)
     if (target !== d.hoverTarget) {
       if (d.hoverGlow) { d.hoverGlow.destroy(); d.hoverGlow = null }
+      if (d.hoverTarget) d.hoverTarget.label.setColor(TILE_TEXT_COLOR)
       d.hoverTarget = target
       if (target) {
-        const root = this.layout.getRoot()
-        const g = this.scene.add.image(target.container.x, target.container.y + sd(GLOW_OFFSET_Y), TEX.selectionYellow)
-          .setOrigin(0.5, 0.5)
-          .setDepth(target.container.depth + 1)
+        const g = this.scene.add.image(0, sd(GLOW_OFFSET_Y), TEX.selectionYellow).setOrigin(0.5, 0.5)
         g.setDisplaySize(sd(GLOW_SIZE.w), sd(GLOW_SIZE.h))
-        root.add(g)
-        root.bringToTop(d.tile.container)
+        // Halo parented to the target (follows future animations) and appended
+        // last so it renders on top of the tile's face/back/label children.
+        target.container.add(g)
+        this.layout.getRoot().bringToTop(d.tile.container)
         d.hoverGlow = g
+        target.label.setColor(HOVER_TEXT_COLOR)
       }
     }
   }
@@ -308,11 +371,13 @@ export class TileInteraction {
     return null
   }
 
-  private onPointerUp(_p: Phaser.Input.Pointer): void {
+  private onPointerUp(p: Phaser.Input.Pointer): void {
+    if (this.phase2Drag) { this.onPhase2PointerUp(p); return }
     if (!this.drag) return
     const d = this.drag
     d.glow.destroy()
     if (d.hoverGlow) d.hoverGlow.destroy()
+    if (d.hoverTarget) d.hoverTarget.label.setColor(TILE_TEXT_COLOR)
 
     const target = d.hoverTarget
     const originalIndex = d.originalIndex
@@ -327,36 +392,67 @@ export class TileInteraction {
         const word = validFirst ? wordA : wordB
         const left = validFirst ? d.tile : target
         const right = validFirst ? target : d.tile
+        this.layout.decrementMoves()
         this.doMerge(left, right, word)
         return
       }
-      this.flashRed(d.tile, target)
+      this.layout.decrementMoves()
+      this.rejectInvalidPair(d.tile, target, originalIndex)
+      return
     }
-    this.layout.getRoot().moveTo(d.tile.container, originalIndex)
-    this.returnToRest(d.tile)
+    this.returnToRest(d.tile, originalIndex)
   }
 
-  private flashRed(a: GameplayTile, b: GameplayTile): void {
+  private rejectInvalidPair(dragged: GameplayTile, target: GameplayTile, originalIndex: number): void {
+    this.mergeInProgress = true
     const mkGlow = (t: GameplayTile) => {
-      const g = this.scene.add.image(t.container.x, t.container.y + sd(GLOW_OFFSET_Y), TEX.selectionRed)
-        .setOrigin(0.5, 0.5)
-        .setDepth(t.container.depth + 1)
+      const g = this.scene.add.image(0, sd(GLOW_OFFSET_Y), TEX.selectionRed).setOrigin(0.5, 0.5)
       g.setDisplaySize(sd(GLOW_SIZE.w), sd(GLOW_SIZE.h))
-      this.layout.getRoot().add(g)
+      t.container.add(g)
       return g
     }
-    const ga = mkGlow(a)
-    const gb = mkGlow(b)
+    const ga = mkGlow(dragged)
+    const gb = mkGlow(target)
+
+    this.layout.getRoot().moveTo(dragged.container, originalIndex)
     this.scene.tweens.add({
-      targets: [ga, gb],
-      alpha: 0,
-      duration: RED_FLASH_DURATION,
+      targets: dragged.container,
+      x: sx(dragged.baseDesignX),
+      y: sy(dragged.baseDesignY),
+      duration: 180,
       ease: 'Sine.easeOut',
-      onComplete: () => { ga.destroy(); gb.destroy() }
+      onComplete: () => {
+        this.shakeInvalid([dragged, target], () => {
+          ga.destroy()
+          gb.destroy()
+          this.mergeInProgress = false
+        })
+      }
     })
   }
 
-  private returnToRest(tile: GameplayTile): void {
+  private shakeInvalid(tiles: GameplayTile[], onComplete: () => void): void {
+    const restXs = tiles.map(t => t.container.x)
+    const proxy = { t: 0 }
+    this.scene.tweens.add({
+      targets: proxy,
+      t: 1,
+      duration: SHAKE_DURATION,
+      ease: 'Sine.easeOut',
+      onUpdate: () => {
+        const p = proxy.t
+        const osc = Math.sin(p * Math.PI * 2 * SHAKE_CYCLES) * (1 - p)
+        const dx = sd(SHAKE_AMPLITUDE) * osc
+        for (let i = 0; i < tiles.length; i++) tiles[i].container.x = restXs[i] + dx
+      },
+      onComplete: () => {
+        for (let i = 0; i < tiles.length; i++) tiles[i].container.x = restXs[i]
+        onComplete()
+      }
+    })
+  }
+
+  private returnToRest(tile: GameplayTile, restoreIndex?: number): void {
     const targetX = sx(tile.baseDesignX)
     const targetY = sy(tile.baseDesignY)
     this.scene.tweens.add({
@@ -364,7 +460,10 @@ export class TileInteraction {
       x: targetX,
       y: targetY,
       duration: 180,
-      ease: 'Sine.easeOut'
+      ease: 'Sine.easeOut',
+      onComplete: () => {
+        if (restoreIndex !== undefined) this.layout.getRoot().moveTo(tile.container, restoreIndex)
+      }
     })
   }
 
@@ -424,6 +523,9 @@ export class TileInteraction {
   }
 
   private spawnMergedAndStretch(word: string): void {
+    // Unlock input the moment the merged word appears — the subsequent
+    // stretch + fly-to-slot animations no longer block a fresh merge.
+    this.mergeInProgress = false
     const container = this.scene.add.container(sx(MERGE_ANCHOR_DESIGN_X), sy(MERGE_ANCHOR_DESIGN_Y))
     const img = this.scene.add.image(0, 0, TEX.mergedTile).setOrigin(0.5, 0.5)
     img.setDisplaySize(sd(MERGED_TILE_SIZE.w), sd(MERGED_TILE_SIZE.h))
@@ -432,9 +534,21 @@ export class TileInteraction {
       fontSize: `${sd(MERGED_TEXT_FONT_SIZE)}px`,
       color: MERGED_TEXT_COLOR
     }).setOrigin(0.5, 0.5)
+
+    // Auto-fit: shrink font if the rendered label overflows the tile face.
+    // label.width is in canvas px; divide by sd(1) to get design px.
+    const designLabelW = label.width / sd(1)
+    let fontSize = MERGED_TEXT_FONT_SIZE
+    if (designLabelW > MERGED_TEXT_MAX_WIDTH) {
+      fontSize = MERGED_TEXT_FONT_SIZE * (MERGED_TEXT_MAX_WIDTH / designLabelW)
+      label.setFontSize(sd(fontSize))
+    }
+
     container.add([img, label])
     this.layout.getRoot().add(container)
     this.layout.getRoot().bringToTop(container)
+
+    this.playMergeBurst(MERGE_ANCHOR_DESIGN_X, MERGE_ANCHOR_DESIGN_Y)
 
     const mv: MergedVisual = {
       container, img, label,
@@ -442,8 +556,11 @@ export class TileInteraction {
       designY: MERGE_ANCHOR_DESIGN_Y,
       designW: MERGED_TILE_SIZE.w,
       designH: MERGED_TILE_SIZE.h,
-      fontSize: MERGED_TEXT_FONT_SIZE,
-      textOffsetY: MERGED_TEXT_OFFSET_Y
+      fontSize,
+      textOffsetY: MERGED_TEXT_OFFSET_Y,
+      slotIndex: -1,
+      word,
+      locked: false
     }
     this.mergedVisuals.push(mv)
 
@@ -477,6 +594,7 @@ export class TileInteraction {
       return
     }
     this.occupiedSlots.add(slotIndex)
+    mv.slotIndex = slotIndex
     const slot = this.slots[slotIndex]
     const startDX = mv.designX
     const startDY = mv.designY
@@ -506,8 +624,8 @@ export class TileInteraction {
         mv.designY = endDY
         this.scene.tweens.add({
           targets: mv.container,
-          scaleX: 0.75,
-          scaleY: 0.75,
+          scaleX: 0.9,
+          scaleY: 0.9,
           duration: SLOT_LAND_SQUASH,
           ease: 'Quad.easeOut',
           onComplete: () => {
@@ -518,7 +636,9 @@ export class TileInteraction {
               duration: SLOT_LAND_SQUASH,
               ease: 'Back.easeOut',
               easeParams: [2],
-              onComplete: () => { this.mergeInProgress = false }
+              onComplete: () => {
+                if (this.occupiedSlots.size === this.slots.length) this.onPhase1Complete()
+              }
             })
           }
         })
@@ -541,6 +661,296 @@ export class TileInteraction {
     // After RAINBOW merge, reveal every remaining top tile.
     if (word === 'RAINBOW') this.revealAllTops()
     this.applyFaceState()
+  }
+
+  private playMergeBurst(designX: number, designY: number): void {
+    const root = this.layout.getRoot()
+    const cx = sx(designX)
+    const cy = sy(designY)
+
+    const flash = this.scene.add.graphics()
+    flash.fillStyle(0xffffff, 1)
+    flash.fillCircle(0, 0, sd(BURST_FLASH_START_R))
+    flash.setPosition(cx, cy)
+    flash.setBlendMode(Phaser.BlendModes.ADD)
+    root.add(flash)
+    root.bringToTop(flash)
+    this.scene.tweens.add({
+      targets: flash,
+      scale: BURST_FLASH_END_SCALE,
+      alpha: 0,
+      duration: BURST_FLASH_DURATION,
+      ease: 'Cubic.easeOut',
+      onComplete: () => flash.destroy()
+    })
+
+    const ring = this.scene.add.graphics()
+    ring.lineStyle(sd(BURST_RING_THICKNESS), 0xffffff, 0.95)
+    ring.strokeCircle(0, 0, sd(BURST_RING_START_R))
+    ring.setPosition(cx, cy)
+    ring.setBlendMode(Phaser.BlendModes.ADD)
+    ring.setAlpha(0)
+    root.add(ring)
+    root.bringToTop(ring)
+    this.scene.tweens.add({
+      targets: ring,
+      alpha: { from: 0.95, to: 0 },
+      scale: { from: 0.5, to: BURST_RING_END_SCALE },
+      duration: BURST_RING_DURATION,
+      delay: BURST_RING_DELAY,
+      ease: 'Sine.easeOut',
+      onComplete: () => ring.destroy()
+    })
+
+    for (let i = 0; i < BURST_STAR_COUNT; i++) {
+      const angle = (i / BURST_STAR_COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.5
+      const dist = sd(BURST_STAR_DIST_MIN + Math.random() * (BURST_STAR_DIST_MAX - BURST_STAR_DIST_MIN))
+      const size = BURST_STAR_SIZE_MIN + Math.random() * (BURST_STAR_SIZE_MAX - BURST_STAR_SIZE_MIN)
+      const star = this.createSparkleStar(sd(size))
+      star.setPosition(cx, cy)
+      star.setBlendMode(Phaser.BlendModes.ADD)
+      root.add(star)
+      root.bringToTop(star)
+      const duration = BURST_STAR_DURATION_MIN + Math.random() * (BURST_STAR_DURATION_MAX - BURST_STAR_DURATION_MIN)
+      this.scene.tweens.add({
+        targets: star,
+        x: cx + Math.cos(angle) * dist,
+        y: cy + Math.sin(angle) * dist,
+        scale: 0.2,
+        alpha: 0,
+        rotation: (Math.random() - 0.5) * 1.2,
+        duration,
+        delay: Math.random() * 80,
+        ease: 'Cubic.easeOut',
+        onComplete: () => star.destroy()
+      })
+    }
+  }
+
+  private createSparkleStar(size: number): Phaser.GameObjects.Graphics {
+    const g = this.scene.add.graphics()
+    const r = size
+    const w = size * 0.16
+    g.fillStyle(0xffffff, 1)
+    g.beginPath()
+    g.moveTo(0, -r)
+    g.lineTo(w, -w)
+    g.lineTo(r, 0)
+    g.lineTo(w, w)
+    g.lineTo(0, r)
+    g.lineTo(-w, w)
+    g.lineTo(-r, 0)
+    g.lineTo(-w, -w)
+    g.closePath()
+    g.fillPath()
+    return g
+  }
+
+  private onPhase1Complete(): void {
+    this.mergeInProgress = true  // block any residual input; all tiles are merged anyway
+    this.scene.time.delayedCall(120, () => {
+      this.layout.playOutro(() => this.enablePhase2(), () => this.relayout())
+    })
+  }
+
+  private enablePhase2(): void {
+    this.phase2Enabled = true
+    for (const mv of this.mergedVisuals) {
+      if (!mv.img.input) mv.img.setInteractive()
+      mv.img.on('pointerdown', (p: Phaser.Input.Pointer) => this.onPhase2PointerDown(mv, p))
+    }
+  }
+
+  private onPhase2PointerDown(mv: MergedVisual, p: Phaser.Input.Pointer): void {
+    if (!this.phase2Enabled || this.phase2Swapping || this.phase2Drag) return
+    if (mv.locked) return
+    this.phase2Drag = {
+      mv,
+      pointerStartX: p.x,
+      pointerStartY: p.y,
+      containerStartX: mv.container.x,
+      containerStartY: mv.container.y,
+      hoverTarget: null
+    }
+    this.layout.getRoot().bringToTop(mv.container)
+  }
+
+  private onPhase2PointerMove(p: Phaser.Input.Pointer): void {
+    const d = this.phase2Drag
+    if (!d) return
+    const dx = p.x - d.pointerStartX
+    const dy = p.y - d.pointerStartY
+    d.mv.container.setPosition(d.containerStartX + dx, d.containerStartY + dy)
+    d.hoverTarget = this.findPhase2HoverTarget(p.x, p.y)
+  }
+
+  private findPhase2HoverTarget(px: number, py: number): MergedVisual | null {
+    const d = this.phase2Drag
+    if (!d) return null
+    for (const mv of this.mergedVisuals) {
+      if (mv === d.mv) continue
+      if (mv.locked) continue
+      const halfW = sd(mv.designW) / 2
+      const halfH = sd(mv.designH) / 2
+      const cx = mv.container.x
+      const cy = mv.container.y
+      if (px >= cx - halfW && px <= cx + halfW && py >= cy - halfH && py <= cy + halfH) return mv
+    }
+    return null
+  }
+
+  private onPhase2PointerUp(_p: Phaser.Input.Pointer): void {
+    const d = this.phase2Drag
+    if (!d) return
+    const target = d.hoverTarget
+    this.phase2Drag = null
+    if (target) this.swapMergedVisuals(d.mv, target)
+    else this.returnMergedToSlot(d.mv)
+  }
+
+  private returnMergedToSlot(mv: MergedVisual): void {
+    const slot = this.slots[mv.slotIndex]
+    const offY = this.layout.getSlotsYOffset()
+    this.scene.tweens.add({
+      targets: mv.container,
+      x: sx(slot.designX),
+      y: sy(slot.designY + offY),
+      duration: PHASE2_RETURN_DURATION,
+      ease: 'Sine.easeOut',
+      onComplete: () => {
+        mv.designX = slot.designX
+        mv.designY = slot.designY
+      }
+    })
+  }
+
+  private swapMergedVisuals(a: MergedVisual, b: MergedVisual): void {
+    this.phase2Swapping = true
+    const offY = this.layout.getSlotsYOffset()
+    // Convert A's current free-drag display position back into design coords so
+    // the tween starts from exactly where the user dropped it.
+    a.designX = unsx(a.container.x)
+    a.designY = unsy(a.container.y) - offY
+
+    const slotAIndex = a.slotIndex
+    const slotBIndex = b.slotIndex
+    const slotA = this.slots[slotAIndex]
+    const slotB = this.slots[slotBIndex]
+    a.slotIndex = slotBIndex
+    b.slotIndex = slotAIndex
+
+    let done = 0
+    const onDone = () => {
+      done++
+      if (done === 2) {
+        this.phase2Swapping = false
+        this.validateCategories()
+      }
+    }
+    this.tweenMergedToSlot(a, slotB, offY, onDone)
+    this.tweenMergedToSlot(b, slotA, offY, onDone)
+  }
+
+  private tweenMergedToSlot(mv: MergedVisual, slot: SlotInfo, offY: number, onComplete: () => void): void {
+    const proxy = { x: mv.designX, y: mv.designY }
+    this.scene.tweens.add({
+      targets: proxy,
+      x: slot.designX,
+      y: slot.designY,
+      duration: PHASE2_SWAP_DURATION,
+      ease: 'Sine.easeInOut',
+      onUpdate: () => {
+        mv.designX = proxy.x
+        mv.designY = proxy.y
+        mv.container.setPosition(sx(proxy.x), sy(proxy.y + offY))
+      },
+      onComplete: () => {
+        mv.designX = slot.designX
+        mv.designY = slot.designY
+        onComplete()
+      }
+    })
+  }
+
+  private validateCategories(): void {
+    const rows: [MergedVisual[], MergedVisual[]] = [[], []]
+    for (const mv of this.mergedVisuals) {
+      const row = this.slots[mv.slotIndex].row
+      rows[row - 1].push(mv)
+    }
+    for (let r = 0; r < 2; r++) {
+      const row = rows[r].sort((a, b) => a.slotIndex - b.slotIndex)
+      if (row.length !== 3) continue
+      if (row.every(mv => mv.locked)) continue
+      const allSky = row.every(mv => CATEGORY_SKY.has(mv.word))
+      const allFruits = row.every(mv => CATEGORY_FRUITS.has(mv.word))
+      if (!allSky && !allFruits) continue
+      const tex = r === 0 ? TEX.blueMergeTile : TEX.greenMergeTile
+      const categoryTex = r === 0 ? TEX.blueCategoryTile : TEX.greenCategoryTile
+      const categoryName = allSky ? 'THE SKY' : 'FRUITS'
+      const words = row.map(mv => mv.word)
+      this.playSnakeAnimation(row, tex, categoryTex, categoryName, words)
+    }
+  }
+
+  private playSnakeAnimation(row: MergedVisual[], tex: string, categoryTex: string, categoryName: string, words: string[]): void {
+    for (let i = 0; i < row.length; i++) {
+      const mv = row[i]
+      const isLast = i === row.length - 1
+      mv.locked = true
+      this.scene.time.delayedCall(i * SNAKE_STAGGER, () => {
+        mv.img.setTexture(tex)
+        mv.img.setDisplaySize(sd(mv.designW), sd(mv.designH))
+        mv.label.setColor('#ffffff')
+        const proxy = { s: 1 }
+        this.scene.tweens.add({
+          targets: proxy,
+          s: SNAKE_SCALE_PEAK,
+          duration: SNAKE_PER_TILE_DURATION / 2,
+          ease: 'Sine.easeOut',
+          yoyo: true,
+          onUpdate: () => { mv.container.setScale(proxy.s) },
+          onComplete: () => {
+            mv.container.setScale(1)
+            if (isLast) this.spawnCategoryBar(row, categoryTex, categoryName, words)
+          }
+        })
+      })
+    }
+  }
+
+  private spawnCategoryBar(row: MergedVisual[], tex: string, categoryName: string, words: string[]): void {
+    const rowDesignY = this.slots[row[0].slotIndex].designY
+    const bar = this.scene.add.image(0, 0, tex).setOrigin(0, 0.5)
+    const title = this.scene.add.text(0, 0, categoryName, {
+      fontFamily: FONT_FAMILY, color: CATEGORY_TITLE_COLOR
+    }).setOrigin(0.5, 0.5)
+    const wordsText = this.scene.add.text(0, 0, words.join(', '), {
+      fontFamily: FONT_FAMILY, color: CATEGORY_WORDS_COLOR
+    }).setOrigin(0.5, 0.5)
+
+    const root = this.layout.getRoot()
+    root.add([bar, title, wordsText])
+
+    const cb: CategoryBar = {
+      bar, title, words: wordsText, rowDesignY,
+      s: CATEGORY_BAR_START_SCALE_X_MULT
+    }
+    this.categoryBars.push(cb)
+    this.applyCategoryBar(cb)
+
+    const proxy = { s: CATEGORY_BAR_START_SCALE_X_MULT }
+    this.scene.tweens.add({
+      targets: proxy,
+      s: 1,
+      duration: CATEGORY_BAR_DURATION,
+      ease: 'Back.easeOut',
+      easeParams: [2.4],
+      onUpdate: () => {
+        cb.s = proxy.s
+        this.applyCategoryBar(cb)
+      }
+    })
   }
 
   private nextSlotIndex(): number {

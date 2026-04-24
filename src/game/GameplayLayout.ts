@@ -34,7 +34,7 @@ const LEVEL_COUNTER_SIZE = { w: 153.6, h: 34.4 }
 const LEVEL_COUNTER_LOCAL_Y = -111
 const TILE_CONTAINER: ImageSpec = { tex: TEX.tileContainer, ...toDesign(0, -425), w: 888.6667, h: 564.6667 }
 
-const TILE_SLOT_SIZE = { w: 300, h: 163 }
+const TILE_SLOT_SIZE = { w: 290, h: 147 }
 const TILE_SLOTS_ROW1: Array<{ ux: number; uy: number }> = [
   { ux: -310, uy: 445 },
   { ux:    0, uy: 445 },
@@ -95,7 +95,7 @@ const SQUASH_Y = 0.78
 const FALL_START_SCALE = 1.6          // tiles start bigger (closer to camera), shrink to 1 on landing
 
 const MOVES_LABEL = 'Moves'
-const MOVES_COUNT = '8'
+const MOVES_START = 12
 const MOVES_LABEL_FONT_SIZE = 36
 const MOVES_COUNT_FONT_SIZE = 85
 const MOVES_LABEL_LOCAL_Y = -44
@@ -103,6 +103,10 @@ const MOVES_COUNT_LOCAL_Y = 18
 
 const MOVES_ANIM_START_Y = 620
 const MOVES_ANIM_REST_Y = MOVES_CONTAINER.y
+
+const OUTRO_DURATION = 450
+const OUTRO_SLOTS_DROP = 250       // design-y; pushes slot rows + merged tiles off-screen
+const OUTRO_CONTAINER_DROP = 300    // design-y; tile container slides down while fading
 
 export class GameplayLayout {
   private root: Phaser.GameObjects.Container
@@ -123,10 +127,15 @@ export class GameplayLayout {
   private movesCount!: Phaser.GameObjects.Text
   private levelCounter!: Phaser.GameObjects.Image
   private movesDesignY = MOVES_ANIM_START_Y
+  private movesRemaining = MOVES_START
   private row1Slots: Phaser.GameObjects.Image[] = []
   private row2Slots: Phaser.GameObjects.Image[] = []
   private row1Mult = 0
   private row2Mult = 0
+  private tileContainerImage!: Phaser.GameObjects.Image
+  private slotsDesignYOffset = 0
+  private tileContainerDesignYOffset = 0
+  private tileContainerAlpha = 1
 
   constructor(private scene: Phaser.Scene) {
     this.root = scene.add.container(0, 0).setDepth(DEPTH.GAME).setAlpha(0)
@@ -139,7 +148,7 @@ export class GameplayLayout {
       fontSize: `${MOVES_LABEL_FONT_SIZE}px`,
       color: '#ffffff'
     }).setOrigin(0.5, 0.5)
-    this.movesCount = scene.add.text(0, 0, MOVES_COUNT, {
+    this.movesCount = scene.add.text(0, 0, String(MOVES_START), {
       fontFamily: FONT_FAMILY,
       fontSize: `${MOVES_COUNT_FONT_SIZE}px`,
       color: '#ffffff'
@@ -160,7 +169,7 @@ export class GameplayLayout {
       this.row2Slots.push(obj)
     }
 
-    this.addImage(TILE_CONTAINER)
+    this.tileContainerImage = this.addImage(TILE_CONTAINER).obj
 
     for (const spec of PURPLE_FRONTS) {
       const container = scene.add.container(0, 0)
@@ -191,8 +200,11 @@ export class GameplayLayout {
       obj.setPosition(sx(spec.x), sy(spec.y))
       obj.setDisplaySize(sd(spec.w), sd(spec.h))
     }
-    for (const s of this.row1Slots) { s.scaleX *= this.row1Mult; s.scaleY *= this.row1Mult }
-    for (const s of this.row2Slots) { s.scaleX *= this.row2Mult; s.scaleY *= this.row2Mult }
+    const slotDy = sd(this.slotsDesignYOffset)
+    for (const s of this.row1Slots) { s.y += slotDy; s.scaleX *= this.row1Mult; s.scaleY *= this.row1Mult }
+    for (const s of this.row2Slots) { s.y += slotDy; s.scaleX *= this.row2Mult; s.scaleY *= this.row2Mult }
+    this.tileContainerImage.y += sd(this.tileContainerDesignYOffset)
+    this.tileContainerImage.setAlpha(this.tileContainerAlpha)
 
     this.movesGroup.setPosition(sx(MOVES_CONTAINER.x), sy(this.movesDesignY))
     this.movesBg.setDisplaySize(sd(MOVES_CONTAINER.w), sd(MOVES_CONTAINER.h))
@@ -251,6 +263,16 @@ export class GameplayLayout {
       result.push({ image: this.row2Slots[i], designX: p.x, designY: p.y, row: 2 })
     }
     return result
+  }
+
+  decrementMoves(): number {
+    if (this.movesRemaining > 0) this.movesRemaining--
+    this.movesCount.setText(String(this.movesRemaining))
+    return this.movesRemaining
+  }
+
+  getMovesRemaining(): number {
+    return this.movesRemaining
   }
 
   getTileContainerCenter(): { x: number; y: number; w: number; h: number } {
@@ -336,6 +358,36 @@ export class GameplayLayout {
       this.animateTileFall(top, cursor)
       cursor += FALL_STAGGER_INTER
     }
+  }
+
+  getSlotsYOffset(): number {
+    return this.slotsDesignYOffset
+  }
+
+  playOutro(onComplete?: () => void, onUpdate?: () => void): void {
+    const slotProxy = { y: 0 }
+    this.scene.tweens.add({
+      targets: slotProxy,
+      y: OUTRO_SLOTS_DROP,
+      duration: OUTRO_DURATION,
+      ease: 'Quad.easeIn',
+      onUpdate: () => { this.slotsDesignYOffset = slotProxy.y }
+    })
+    const cProxy = { y: 0, a: 1 }
+    this.scene.tweens.add({
+      targets: cProxy,
+      y: OUTRO_CONTAINER_DROP,
+      a: 0,
+      duration: OUTRO_DURATION,
+      ease: 'Sine.easeIn',
+      onUpdate: () => {
+        this.tileContainerDesignYOffset = cProxy.y
+        this.tileContainerAlpha = cProxy.a
+        this.relayout()
+        onUpdate?.()
+      },
+      onComplete
+    })
   }
 
   fadeIn(duration = 400): void {

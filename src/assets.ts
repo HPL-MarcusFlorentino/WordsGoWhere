@@ -7,6 +7,10 @@ import tileContainer from '../Assets/Gameplay/Tile_Container.webp'
 import purpleBackTile from '../Assets/Gameplay/Purple_Back_Tile.webp'
 import purpleFrontTile from '../Assets/Gameplay/Purple_Front_Tile.webp'
 import mergedTile from '../Assets/Gameplay/Merged_Tile.webp'
+import blueMergeTile from '../Assets/Gameplay/Blue_Merge_Tile.webp'
+import greenMergeTile from '../Assets/Gameplay/Green_Merge_Tile.webp'
+import blueCategoryTile from '../Assets/Gameplay/Blue_Category_Tile.webp'
+import greenCategoryTile from '../Assets/Gameplay/Green_Category_Tile.webp'
 import selectionGreen from '../Assets/Selection/Selection_Green.webp'
 import selectionYellow from '../Assets/Selection/Selection_Yellow.webp'
 import selectionRed from '../Assets/Selection/Selection_Red.webp'
@@ -22,6 +26,10 @@ export const ASSETS = {
   purpleBackTile,
   purpleFrontTile,
   mergedTile,
+  blueMergeTile,
+  greenMergeTile,
+  blueCategoryTile,
+  greenCategoryTile,
   selectionGreen,
   selectionYellow,
   selectionRed,
@@ -38,6 +46,10 @@ export const TEX = {
   purpleBackTile: 'purple_back_tile',
   purpleFrontTile: 'purple_front_tile',
   mergedTile: 'merged_tile',
+  blueMergeTile: 'blue_merge_tile',
+  greenMergeTile: 'green_merge_tile',
+  blueCategoryTile: 'blue_category_tile',
+  greenCategoryTile: 'green_category_tile',
   selectionGreen: 'selection_green',
   selectionYellow: 'selection_yellow',
   selectionRed: 'selection_red'
