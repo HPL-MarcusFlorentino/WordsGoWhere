@@ -291,26 +291,6 @@
           }
         },
 {
-          "name": "Purple Front Tile - Small",
-          "type": "Image",
-          "sprite": "Purple_Front_Tile.png",
-          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
-          "preserveAspect": false,
-          "active": false,
-          "rectTransform": {
-            "anchorMin": { "x": 0.5, "y": 0.5 },
-            "anchorMax": { "x": 0.5, "y": 0.5 },
-            "anchoredPosition": { "x": 0, "y": -498.8 },
-            "sizeDelta": { "x": 252, "y": 189.3333 },
-            "pivot": { "x": 0.5, "y": 0.5 }
-          },
-          "worldRect": {
-            "topLeft": { "x": 413.937, "y": 1364.133 },
-            "center": { "x": 540, "y": 1458.8 },
-            "size": { "width": 252.126, "height": 189.3333 }
-          }
-        },
-{
           "name": "Purple Front Tile - Long",
           "type": "Image",
           "sprite": "Merged_Tile.png",
@@ -355,118 +335,532 @@
           ]
         },
 {
-          "name": "Purple Back Tile",
+          "name": "Purple Front Tile - LE",
           "type": "Image",
-          "sprite": "Purple_Back_Tile.png",
+          "sprite": "Purple_Front_Tile.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
             "anchorMin": { "x": 0.5, "y": 0.5 },
             "anchorMax": { "x": 0.5, "y": 0.5 },
             "anchoredPosition": { "x": 0, "y": -280 },
-            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 411.269, "y": 1142.333 },
+            "topLeft": { "x": 428.768, "y": 1156.471 },
             "center": { "x": 540, "y": 1240 },
-            "size": { "width": 257.4621, "height": 195.3332 }
-          }
+            "size": { "width": 222.4641, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "LE",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 428.768, "y": 1156.471 },
+                "center": { "x": 540, "y": 1225 },
+                "size": { "width": 222.4641, "height": 137.0588 }
+              }
+            }
+          ]
         },
 {
-          "name": "Purple Back Tile (1)",
+          "name": "Purple Front Tile - BOW",
           "type": "Image",
-          "sprite": "Purple_Back_Tile.png",
+          "sprite": "Purple_Front_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 0, "y": -250 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 428.768, "y": 1126.471 },
+            "center": { "x": 540, "y": 1210 },
+            "size": { "width": 222.4641, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "BOW",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 428.768, "y": 1126.471 },
+                "center": { "x": 540, "y": 1195 },
+                "size": { "width": 222.4641, "height": 137.0588 }
+              }
+            }
+          ]
+        },
+{
+          "name": "Purple Front Tile - ANGE",
+          "type": "Image",
+          "sprite": "Purple_Front_Tile.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
             "anchorMin": { "x": 0.5, "y": 0.5 },
             "anchorMax": { "x": 0.5, "y": 0.5 },
             "anchoredPosition": { "x": 0, "y": -580 },
-            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 411.269, "y": 1442.333 },
+            "topLeft": { "x": 428.768, "y": 1456.47 },
             "center": { "x": 540, "y": 1540 },
-            "size": { "width": 257.4621, "height": 195.3333 }
-          }
+            "size": { "width": 222.4641, "height": 167.0589 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "ANGE\n",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 428.768, "y": 1456.47 },
+                "center": { "x": 540, "y": 1525 },
+                "size": { "width": 222.4641, "height": 137.0589 }
+              }
+            }
+          ]
         },
 {
-          "name": "Purple Back Tile (2)",
+          "name": "Purple Front Tile - SU",
           "type": "Image",
-          "sprite": "Purple_Back_Tile.png",
+          "sprite": "Purple_Front_Tile.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
             "anchorMin": { "x": 0.5, "y": 0.5 },
             "anchorMax": { "x": 0.5, "y": 0.5 },
-            "anchoredPosition": { "x": -245, "y": -366 },
-            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "anchoredPosition": { "x": 0, "y": -550 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 166.1465, "y": 1228.333 },
-            "center": { "x": 294.8775, "y": 1326 },
-            "size": { "width": 257.462, "height": 195.3332 }
-          }
+            "topLeft": { "x": 428.768, "y": 1426.47 },
+            "center": { "x": 540, "y": 1510 },
+            "size": { "width": 222.4641, "height": 167.0589 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "SU",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 428.768, "y": 1426.47 },
+                "center": { "x": 540, "y": 1495 },
+                "size": { "width": 222.4641, "height": 137.0589 }
+              }
+            }
+          ]
         },
 {
-          "name": "Purple Back Tile (3)",
+          "name": "Purple Front Tile - APP",
           "type": "Image",
-          "sprite": "Purple_Back_Tile.png",
+          "sprite": "Purple_Front_Tile.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
             "anchorMin": { "x": 0.5, "y": 0.5 },
             "anchorMax": { "x": 0.5, "y": 0.5 },
-            "anchoredPosition": { "x": 245, "y": -366 },
-            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "anchoredPosition": { "x": -255, "y": -366 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 656.3914, "y": 1228.333 },
-            "center": { "x": 785.1224, "y": 1326 },
-            "size": { "width": 257.4621, "height": 195.3332 }
-          }
+            "topLeft": { "x": 173.6404, "y": 1242.471 },
+            "center": { "x": 284.8725, "y": 1326 },
+            "size": { "width": 222.4641, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "APP",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 173.6404, "y": 1242.471 },
+                "center": { "x": 284.8725, "y": 1311 },
+                "size": { "width": 222.4641, "height": 137.0588 }
+              }
+            }
+          ]
         },
 {
-          "name": "Purple Back Tile (4)",
+          "name": "Purple Front Tile - RAIN",
           "type": "Image",
-          "sprite": "Purple_Back_Tile.png",
+          "sprite": "Purple_Front_Tile.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
             "anchorMin": { "x": 0.5, "y": 0.5 },
             "anchorMax": { "x": 0.5, "y": 0.5 },
-            "anchoredPosition": { "x": -245, "y": -525 },
-            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "anchoredPosition": { "x": -255, "y": -336 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 166.1465, "y": 1387.333 },
-            "center": { "x": 294.8775, "y": 1485 },
-            "size": { "width": 257.462, "height": 195.3333 }
-          }
+            "topLeft": { "x": 173.6404, "y": 1212.471 },
+            "center": { "x": 284.8725, "y": 1296 },
+            "size": { "width": 222.4641, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "RAIN",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 173.6404, "y": 1212.471 },
+                "center": { "x": 284.8725, "y": 1281 },
+                "size": { "width": 222.4641, "height": 137.0588 }
+              }
+            }
+          ]
         },
 {
-          "name": "Purple Back Tile (5)",
+          "name": "Purple Front Tile - OR",
           "type": "Image",
-          "sprite": "Purple_Back_Tile.png",
+          "sprite": "Purple_Front_Tile.png",
           "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
           "preserveAspect": false,
           "rectTransform": {
             "anchorMin": { "x": 0.5, "y": 0.5 },
             "anchorMax": { "x": 0.5, "y": 0.5 },
-            "anchoredPosition": { "x": 245, "y": -525 },
-            "sizeDelta": { "x": 257.3334, "y": 195.3333 },
+            "anchoredPosition": { "x": 255, "y": -366 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 656.3914, "y": 1387.333 },
-            "center": { "x": 785.1224, "y": 1485 },
-            "size": { "width": 257.4621, "height": 195.3333 }
-          }
+            "topLeft": { "x": 683.8954, "y": 1242.471 },
+            "center": { "x": 795.1275, "y": 1326 },
+            "size": { "width": 222.4642, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "OR",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 683.8954, "y": 1242.471 },
+                "center": { "x": 795.1275, "y": 1311 },
+                "size": { "width": 222.4642, "height": 137.0588 }
+              }
+            }
+          ]
+        },
+{
+          "name": "Purple Front Tile - N",
+          "type": "Image",
+          "sprite": "Purple_Front_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 255, "y": -336 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 683.8954, "y": 1212.471 },
+            "center": { "x": 795.1275, "y": 1296 },
+            "size": { "width": 222.4642, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "N\n",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 683.8954, "y": 1212.471 },
+                "center": { "x": 795.1275, "y": 1281 },
+                "size": { "width": 222.4642, "height": 137.0588 }
+              }
+            }
+          ]
+        },
+{
+          "name": "Purple Front Tile - UD",
+          "type": "Image",
+          "sprite": "Purple_Front_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": -255, "y": -566 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 173.6404, "y": 1442.471 },
+            "center": { "x": 284.8725, "y": 1526 },
+            "size": { "width": 222.4641, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "UD",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 173.6404, "y": 1442.471 },
+                "center": { "x": 284.8725, "y": 1511 },
+                "size": { "width": 222.4641, "height": 137.0588 }
+              }
+            }
+          ]
+        },
+{
+          "name": "Purple Front Tile - MAN",
+          "type": "Image",
+          "sprite": "Purple_Front_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": -255, "y": -536 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 173.6404, "y": 1412.47 },
+            "center": { "x": 284.8725, "y": 1496 },
+            "size": { "width": 222.4641, "height": 167.0589 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "MAN",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 173.6404, "y": 1412.47 },
+                "center": { "x": 284.8725, "y": 1481 },
+                "size": { "width": 222.4641, "height": 137.0589 }
+              }
+            }
+          ]
+        },
+{
+          "name": "Purple Front Tile - CLO",
+          "type": "Image",
+          "sprite": "Purple_Front_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 255, "y": -566 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 683.8954, "y": 1442.471 },
+            "center": { "x": 795.1275, "y": 1526 },
+            "size": { "width": 222.4642, "height": 167.0588 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "CLO\n",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 683.8954, "y": 1442.471 },
+                "center": { "x": 795.1275, "y": 1511 },
+                "size": { "width": 222.4642, "height": 137.0588 }
+              }
+            }
+          ]
+        },
+{
+          "name": "Purple Front Tile - GO",
+          "type": "Image",
+          "sprite": "Purple_Front_Tile.png",
+          "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+          "preserveAspect": false,
+          "rectTransform": {
+            "anchorMin": { "x": 0.5, "y": 0.5 },
+            "anchorMax": { "x": 0.5, "y": 0.5 },
+            "anchoredPosition": { "x": 255, "y": -536 },
+            "sizeDelta": { "x": 222.3529, "y": 167.0588 },
+            "pivot": { "x": 0.5, "y": 0.5 }
+          },
+          "worldRect": {
+            "topLeft": { "x": 683.8954, "y": 1412.47 },
+            "center": { "x": 795.1275, "y": 1496 },
+            "size": { "width": 222.4642, "height": 167.0589 }
+          },
+          "children": [
+{
+              "name": "Text",
+              "type": "TextMeshPro",
+              "text": "GO",
+              "font": "BALOO-REGULAR SDF",
+              "fontSize": 75,
+              "color": { "r": 0.2471, "g": 0.2471, "b": 0.2471, "a": 1 },
+              "horizontalAlignment": "Center",
+              "verticalAlignment": "Middle",
+              "wordWrapping": true,
+              "rectTransform": {
+                "anchorMin": { "x": 0, "y": 0 },
+                "anchorMax": { "x": 1, "y": 1 },
+                "anchoredPosition": { "x": 0, "y": 15 },
+                "sizeDelta": { "x": 0, "y": -30 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 683.8954, "y": 1412.47 },
+                "center": { "x": 795.1275, "y": 1481 },
+                "size": { "width": 222.4642, "height": 137.0589 }
+              }
+            }
+          ]
         }
       ]
     }

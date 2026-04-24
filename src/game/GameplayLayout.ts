@@ -27,22 +27,52 @@ const TILE_SLOTS_ROW2: Array<{ ux: number; uy: number }> = [
   { ux:  310, uy: 235 }
 ]
 
-const PURPLE_BACK_SIZE = { w: 257.3334, h: 195.3333 }
-const PURPLE_BACKS: Array<{ ux: number; uy: number }> = [
-  { ux:    0, uy: -280 },
-  { ux:    0, uy: -580 },
-  { ux: -245, uy: -366 },
-  { ux:  245, uy: -366 },
-  { ux: -245, uy: -525 },
-  { ux:  245, uy: -525 }
+const PURPLE_FRONT_SIZE = { w: 222.3529, h: 167.0588 }
+const PURPLE_FRONT_TEXT_FONT_SIZE = 75
+const PURPLE_FRONT_TEXT_COLOR = '#3f3f3f'
+const PURPLE_FRONT_TEXT_OFFSET_Y = -15
+
+type PurpleFrontSpec = { ux: number; uy: number; text: string; stack: number; layer: 'bottom' | 'top' }
+// stack = user's positions 1..6 (1 top, 2 UR, 3 LR, 4 bottom, 5 LL, 6 UL)
+// layer = which tile in the 2-tile stack: bottom lands first, top lands on it
+const STACK_INTRA_DY = 30
+const SIDE_X = 230
+const TOP_Y = -250
+const UPPER_Y = -360
+const LOWER_Y = -510
+const BOTTOM_Y = -580
+const PURPLE_FRONTS: PurpleFrontSpec[] = [
+  // Stack 1 — top center
+  { ux:    0, uy: TOP_Y - STACK_INTRA_DY,    text: 'LE',   stack: 1, layer: 'bottom' },
+  { ux:    0, uy: TOP_Y,                     text: 'BOW',  stack: 1, layer: 'top'    },
+  // Stack 4 — bottom center
+  { ux:    0, uy: BOTTOM_Y - STACK_INTRA_DY, text: 'ANGE', stack: 4, layer: 'bottom' },
+  { ux:    0, uy: BOTTOM_Y,                  text: 'SU',   stack: 4, layer: 'top'    },
+  // Stack 6 — upper-left
+  { ux: -SIDE_X, uy: UPPER_Y - STACK_INTRA_DY, text: 'APP',  stack: 6, layer: 'bottom' },
+  { ux: -SIDE_X, uy: UPPER_Y,                  text: 'RAIN', stack: 6, layer: 'top'    },
+  // Stack 2 — upper-right
+  { ux:  SIDE_X, uy: UPPER_Y - STACK_INTRA_DY, text: 'OR',   stack: 2, layer: 'bottom' },
+  { ux:  SIDE_X, uy: UPPER_Y,                  text: 'N',    stack: 2, layer: 'top'    },
+  // Stack 5 — lower-left
+  { ux: -SIDE_X, uy: LOWER_Y - STACK_INTRA_DY, text: 'UD',   stack: 5, layer: 'bottom' },
+  { ux: -SIDE_X, uy: LOWER_Y,                  text: 'MAN',  stack: 5, layer: 'top'    },
+  // Stack 3 — lower-right
+  { ux:  SIDE_X, uy: LOWER_Y - STACK_INTRA_DY, text: 'CLO',  stack: 3, layer: 'bottom' },
+  { ux:  SIDE_X, uy: LOWER_Y,                  text: 'GO',   stack: 3, layer: 'top'    }
 ]
 
-const PURPLE_FRONT_SMALL: ImageSpec = {
-  tex: TEX.purpleFrontTile,
-  ...toDesign(0, -498.8),
-  w: 252,
-  h: 189.3333
-}
+// Falling order: bottom of board first, cycling through stacks
+const FALL_STACK_ORDER = [4, 5, 3, 6, 2, 1]
+const FALL_START_DESIGN_Y = 960       // mid-screen in design coords (CY)
+const FALL_DURATION = 380             // ms per tile fall
+// Last tile (stack 1 top / BOW) must land when bottom slot row finishes (t = 940 ms).
+// 12 tiles → 11 inter-tile gaps must fit in (940 - FALL_DURATION) = 560 ms.
+const FALL_LAST_LANDING_MS = 940
+const FALL_STAGGER_INTER = (FALL_LAST_LANDING_MS - FALL_DURATION) / 11
+const SQUASH_DURATION = 110           // ms to squash
+const SQUASH_X = 1.18
+const SQUASH_Y = 0.78
 
 const MERGED_TILE: ImageSpec = {
   tex: TEX.mergedTile,
@@ -72,6 +102,15 @@ export class GameplayLayout {
   private mergedTile!: Phaser.GameObjects.Container
   private mergedTileImage!: Phaser.GameObjects.Image
   private mergedLabel!: Phaser.GameObjects.Text
+  private purpleFronts: Array<{
+    container: Phaser.GameObjects.Container
+    image: Phaser.GameObjects.Image
+    label: Phaser.GameObjects.Text
+    spec: PurpleFrontSpec
+    animY: number      // additive design-y offset (negative = above rest)
+    scaleX: number     // additional scale on top of relayout sizing
+    scaleY: number
+  }> = []
   private movesGroup!: Phaser.GameObjects.Container
   private movesBg!: Phaser.GameObjects.Image
   private movesLabel!: Phaser.GameObjects.Text
@@ -117,12 +156,18 @@ export class GameplayLayout {
 
     this.addImage(TILE_CONTAINER)
 
-    for (const back of PURPLE_BACKS) {
-      const p = toDesign(back.ux, back.uy)
-      this.addImage({ tex: TEX.purpleBackTile, x: p.x, y: p.y, w: PURPLE_BACK_SIZE.w, h: PURPLE_BACK_SIZE.h })
+    for (const spec of PURPLE_FRONTS) {
+      const container = scene.add.container(0, 0)
+      const image = scene.add.image(0, 0, TEX.purpleFrontTile).setOrigin(0.5, 0.5)
+      const label = scene.add.text(0, 0, spec.text, {
+        fontFamily: FONT_FAMILY,
+        fontSize: `${PURPLE_FRONT_TEXT_FONT_SIZE}px`,
+        color: PURPLE_FRONT_TEXT_COLOR
+      }).setOrigin(0.5, 0.5)
+      container.add([image, label])
+      this.root.add(container)
+      this.purpleFronts.push({ container, image, label, spec, animY: 0, scaleX: 1, scaleY: 1 })
     }
-
-    this.addImage(PURPLE_FRONT_SMALL).obj.setVisible(false)
 
     this.mergedTile = scene.add.container(0, 0)
     this.mergedTileImage = scene.add.image(0, 0, MERGED_TILE.tex).setOrigin(0.5, 0.5)
@@ -164,6 +209,88 @@ export class GameplayLayout {
     this.mergedTileImage.setDisplaySize(sd(MERGED_TILE.w), sd(MERGED_TILE.h))
     this.mergedLabel.setPosition(0, sd(MERGED_TEXT_OFFSET_Y))
     this.mergedLabel.setFontSize(sd(MERGED_TEXT_FONT_SIZE))
+
+    for (const entry of this.purpleFronts) {
+      const { container, image, label, spec, animY, scaleX, scaleY } = entry
+      const p = toDesign(spec.ux, spec.uy)
+      container.setPosition(sx(p.x), sy(p.y + animY))
+      image.setDisplaySize(sd(PURPLE_FRONT_SIZE.w) * scaleX, sd(PURPLE_FRONT_SIZE.h) * scaleY)
+      label.setPosition(0, sd(PURPLE_FRONT_TEXT_OFFSET_Y) * scaleY)
+      label.setFontSize(sd(PURPLE_FRONT_TEXT_FONT_SIZE) * Math.min(scaleX, scaleY))
+    }
+  }
+
+  private animateTileFall(entry: GameplayLayout['purpleFronts'][number], delay: number): void {
+    const restY = toDesign(entry.spec.ux, entry.spec.uy).y
+    entry.animY = FALL_START_DESIGN_Y - restY
+    entry.container.setAlpha(0)
+    this.scene.tweens.add({
+      targets: entry.container,
+      alpha: 1,
+      duration: FALL_DURATION,
+      delay,
+      ease: 'Sine.easeOut'
+    })
+    const fallProxy = { d: entry.animY }
+    this.scene.tweens.add({
+      targets: fallProxy,
+      d: 0,
+      duration: FALL_DURATION,
+      delay,
+      ease: 'Quad.easeIn',
+      onUpdate: () => { entry.animY = fallProxy.d; this.relayout() },
+      onComplete: () => {
+        // Squash on impact, then return to rest
+        const sq = { x: 1, y: 1 }
+        this.scene.tweens.add({
+          targets: sq,
+          x: SQUASH_X,
+          y: SQUASH_Y,
+          duration: SQUASH_DURATION,
+          ease: 'Quad.easeOut',
+          onUpdate: () => { entry.scaleX = sq.x; entry.scaleY = sq.y; this.relayout() },
+          onComplete: () => {
+            this.scene.tweens.add({
+              targets: sq,
+              x: 1,
+              y: 1,
+              duration: SQUASH_DURATION * 1.4,
+              ease: 'Back.easeOut',
+              easeParams: [2.0],
+              onUpdate: () => { entry.scaleX = sq.x; entry.scaleY = sq.y; this.relayout() }
+            })
+          }
+        })
+      }
+    })
+  }
+
+  playFalling(startDelay = 0): void {
+    // Initialize all tiles off-screen and invisible until their turn
+    for (const entry of this.purpleFronts) {
+      const restY = toDesign(entry.spec.ux, entry.spec.uy).y
+      entry.animY = FALL_START_DESIGN_Y - restY
+      entry.scaleX = 1
+      entry.scaleY = 1
+      entry.container.setAlpha(0)
+    }
+    this.relayout()
+
+    let cursor = startDelay
+
+    // Pass 1: every stack's bottom tile, in order 4 -> 5 -> 3 -> 6 -> 2 -> 1
+    for (const stackId of FALL_STACK_ORDER) {
+      const bottom = this.purpleFronts.find(e => e.spec.stack === stackId && e.spec.layer === 'bottom')!
+      this.animateTileFall(bottom, cursor)
+      cursor += FALL_STAGGER_INTER
+    }
+
+    // Pass 2: every stack's top tile, same stack order (uniform gap from last bottom)
+    for (const stackId of FALL_STACK_ORDER) {
+      const top = this.purpleFronts.find(e => e.spec.stack === stackId && e.spec.layer === 'top')!
+      this.animateTileFall(top, cursor)
+      cursor += FALL_STAGGER_INTER
+    }
   }
 
   fadeIn(duration = 400): void {
@@ -225,5 +352,8 @@ export class GameplayLayout {
       easeParams: [2.4],
       onUpdate: () => { this.row2Mult = r2.s; this.relayout() }
     })
+
+    // Phase 4 (starts t=0 with Moves rise): tiles fall into the container, bottom stack first
+    this.playFalling(0)
   }
 }
