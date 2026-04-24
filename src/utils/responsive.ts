@@ -17,6 +17,8 @@ export function recomputeResponsive(viewW: number, viewH: number): void {
 export const sx = (x: number) => _offX + x * _s
 export const sy = (y: number) => _offY + y * _s
 export const sd = (d: number) => d * _s
+export const unsx = (cx: number) => (cx - _offX) / _s
+export const unsy = (cy: number) => (cy - _offY) / _s
 export const viewW = () => _vw
 export const viewH = () => _vh
 export const scale = () => _s

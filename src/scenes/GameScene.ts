@@ -4,6 +4,7 @@ import { DEPTH } from '../constants'
 import { viewW, viewH } from '../utils/responsive'
 import { IntroLogo } from '../game/IntroLogo'
 import { GameplayLayout } from '../game/GameplayLayout'
+import { TileInteraction } from '../game/TileInteraction'
 
 const BG_REF = 2000
 
@@ -11,6 +12,7 @@ export class GameScene extends Phaser.Scene {
   private bg!: Phaser.GameObjects.Image
   private introLogo!: IntroLogo
   private gameplay!: GameplayLayout
+  private interaction!: TileInteraction
 
   constructor() { super('Game') }
 
@@ -21,9 +23,13 @@ export class GameScene extends Phaser.Scene {
 
     this.gameplay = new GameplayLayout(this)
     this.introLogo = new IntroLogo(this)
+    this.interaction = new TileInteraction(this, this.gameplay)
 
     this.relayout()
-    this.introLogo.play(undefined, () => this.gameplay.fadeIn(400))
+    this.introLogo.play(undefined, () => {
+      this.gameplay.fadeIn(400)
+      this.time.delayedCall(1200, () => this.interaction.enable())
+    })
   }
 
   relayout(): void {
@@ -36,5 +42,6 @@ export class GameScene extends Phaser.Scene {
 
     this.gameplay.relayout()
     this.introLogo.relayout()
+    if (this.interaction) this.interaction.relayout()
   }
 }

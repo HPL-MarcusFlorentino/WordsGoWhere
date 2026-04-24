@@ -10,6 +10,25 @@ const CY = 960
 
 const toDesign = (ux: number, uy: number) => ({ x: CX + ux, y: CY - uy })
 
+export type GameplayTile = {
+  container: Phaser.GameObjects.Container
+  image: Phaser.GameObjects.Image
+  backImage: Phaser.GameObjects.Image
+  label: Phaser.GameObjects.Text
+  text: string
+  stack: number
+  layer: 'top' | 'bottom'
+  baseDesignX: number
+  baseDesignY: number
+}
+
+export type SlotInfo = {
+  image: Phaser.GameObjects.Image
+  designX: number
+  designY: number
+  row: 1 | 2
+}
+
 const MOVES_CONTAINER: ImageSpec = { tex: TEX.movesContainer, ...toDesign(0, 664), w: 173.6, h: 152.8 }
 const LEVEL_COUNTER_SIZE = { w: 153.6, h: 34.4 }
 const LEVEL_COUNTER_LOCAL_Y = -111
@@ -73,18 +92,7 @@ const FALL_STAGGER_INTER = (FALL_LAST_LANDING_MS - FALL_DURATION) / 11
 const SQUASH_DURATION = 110           // ms to squash
 const SQUASH_X = 1.18
 const SQUASH_Y = 0.78
-
-const MERGED_TILE: ImageSpec = {
-  tex: TEX.mergedTile,
-  ...toDesign(0, 0),
-  w: 308,
-  h: 172
-}
-
-const MERGED_TEXT = 'BREAD'
-const MERGED_TEXT_FONT_SIZE = 55
-const MERGED_TEXT_COLOR = '#3e3e3e'
-const MERGED_TEXT_OFFSET_Y = -15
+const FALL_START_SCALE = 1.6          // tiles start bigger (closer to camera), shrink to 1 on landing
 
 const MOVES_LABEL = 'Moves'
 const MOVES_COUNT = '8'
@@ -99,12 +107,10 @@ const MOVES_ANIM_REST_Y = MOVES_CONTAINER.y
 export class GameplayLayout {
   private root: Phaser.GameObjects.Container
   private images: Array<{ obj: Phaser.GameObjects.Image; spec: ImageSpec }> = []
-  private mergedTile!: Phaser.GameObjects.Container
-  private mergedTileImage!: Phaser.GameObjects.Image
-  private mergedLabel!: Phaser.GameObjects.Text
   private purpleFronts: Array<{
     container: Phaser.GameObjects.Container
     image: Phaser.GameObjects.Image
+    backImage: Phaser.GameObjects.Image
     label: Phaser.GameObjects.Text
     spec: PurpleFrontSpec
     animY: number      // additive design-y offset (negative = above rest)
@@ -158,26 +164,18 @@ export class GameplayLayout {
 
     for (const spec of PURPLE_FRONTS) {
       const container = scene.add.container(0, 0)
-      const image = scene.add.image(0, 0, TEX.purpleFrontTile).setOrigin(0.5, 0.5)
+      const faceUp = spec.text === 'RAIN' || spec.text === 'BOW'
+      const backImage = scene.add.image(0, 0, TEX.purpleBackTile).setOrigin(0.5, 0.5).setVisible(!faceUp)
+      const image = scene.add.image(0, 0, TEX.purpleFrontTile).setOrigin(0.5, 0.5).setVisible(faceUp)
       const label = scene.add.text(0, 0, spec.text, {
         fontFamily: FONT_FAMILY,
         fontSize: `${PURPLE_FRONT_TEXT_FONT_SIZE}px`,
         color: PURPLE_FRONT_TEXT_COLOR
-      }).setOrigin(0.5, 0.5)
-      container.add([image, label])
+      }).setOrigin(0.5, 0.5).setVisible(faceUp)
+      container.add([backImage, image, label])
       this.root.add(container)
-      this.purpleFronts.push({ container, image, label, spec, animY: 0, scaleX: 1, scaleY: 1 })
+      this.purpleFronts.push({ container, image, backImage, label, spec, animY: 0, scaleX: 1, scaleY: 1 })
     }
-
-    this.mergedTile = scene.add.container(0, 0)
-    this.mergedTileImage = scene.add.image(0, 0, MERGED_TILE.tex).setOrigin(0.5, 0.5)
-    this.mergedLabel = scene.add.text(0, 0, MERGED_TEXT, {
-      fontFamily: FONT_FAMILY,
-      fontSize: `${MERGED_TEXT_FONT_SIZE}px`,
-      color: MERGED_TEXT_COLOR
-    }).setOrigin(0.5, 0.5)
-    this.mergedTile.add([this.mergedTileImage, this.mergedLabel])
-    this.root.add(this.mergedTile)
 
   }
 
@@ -205,19 +203,58 @@ export class GameplayLayout {
     this.levelCounter.setPosition(0, sd(LEVEL_COUNTER_LOCAL_Y))
     this.levelCounter.setDisplaySize(sd(LEVEL_COUNTER_SIZE.w), sd(LEVEL_COUNTER_SIZE.h))
 
-    this.mergedTile.setPosition(sx(MERGED_TILE.x), sy(MERGED_TILE.y))
-    this.mergedTileImage.setDisplaySize(sd(MERGED_TILE.w), sd(MERGED_TILE.h))
-    this.mergedLabel.setPosition(0, sd(MERGED_TEXT_OFFSET_Y))
-    this.mergedLabel.setFontSize(sd(MERGED_TEXT_FONT_SIZE))
-
     for (const entry of this.purpleFronts) {
-      const { container, image, label, spec, animY, scaleX, scaleY } = entry
+      const { container, image, backImage, label, spec, animY, scaleX, scaleY } = entry
       const p = toDesign(spec.ux, spec.uy)
       container.setPosition(sx(p.x), sy(p.y + animY))
       image.setDisplaySize(sd(PURPLE_FRONT_SIZE.w) * scaleX, sd(PURPLE_FRONT_SIZE.h) * scaleY)
+      backImage.setDisplaySize(sd(PURPLE_FRONT_SIZE.w) * scaleX, sd(PURPLE_FRONT_SIZE.h) * scaleY)
       label.setPosition(0, sd(PURPLE_FRONT_TEXT_OFFSET_Y) * scaleY)
       label.setFontSize(sd(PURPLE_FRONT_TEXT_FONT_SIZE) * Math.min(scaleX, scaleY))
     }
+  }
+
+  getTiles(): GameplayTile[] {
+    return this.purpleFronts.map(e => ({
+      container: e.container,
+      image: e.image,
+      backImage: e.backImage,
+      label: e.label,
+      text: e.spec.text,
+      stack: e.spec.stack,
+      layer: e.spec.layer,
+      baseDesignX: toDesign(e.spec.ux, e.spec.uy).x,
+      baseDesignY: toDesign(e.spec.ux, e.spec.uy).y
+    }))
+  }
+
+  getTileSize(): { w: number; h: number } {
+    return { w: PURPLE_FRONT_SIZE.w, h: PURPLE_FRONT_SIZE.h }
+  }
+
+  getRoot(): Phaser.GameObjects.Container {
+    return this.root
+  }
+
+  getSlots(): SlotInfo[] {
+    const result: SlotInfo[] = []
+    // Design brief: order is row1 (top), row2 (bottom). Row1 has slots 1,2,3; row2 has 4,5,6
+    // TILE_SLOTS_ROW1 is the row at uy=445 (upper), TILE_SLOTS_ROW2 at uy=235 (lower)
+    for (let i = 0; i < this.row1Slots.length; i++) {
+      const s = TILE_SLOTS_ROW1[i]
+      const p = toDesign(s.ux, s.uy)
+      result.push({ image: this.row1Slots[i], designX: p.x, designY: p.y, row: 1 })
+    }
+    for (let i = 0; i < this.row2Slots.length; i++) {
+      const s = TILE_SLOTS_ROW2[i]
+      const p = toDesign(s.ux, s.uy)
+      result.push({ image: this.row2Slots[i], designX: p.x, designY: p.y, row: 2 })
+    }
+    return result
+  }
+
+  getTileContainerCenter(): { x: number; y: number; w: number; h: number } {
+    return { x: TILE_CONTAINER.x, y: TILE_CONTAINER.y, w: TILE_CONTAINER.w, h: TILE_CONTAINER.h }
   }
 
   private animateTileFall(entry: GameplayLayout['purpleFronts'][number], delay: number): void {
@@ -231,14 +268,22 @@ export class GameplayLayout {
       delay,
       ease: 'Sine.easeOut'
     })
-    const fallProxy = { d: entry.animY }
+    const fallProxy = { d: entry.animY, s: FALL_START_SCALE }
+    entry.scaleX = FALL_START_SCALE
+    entry.scaleY = FALL_START_SCALE
     this.scene.tweens.add({
       targets: fallProxy,
       d: 0,
+      s: 1,
       duration: FALL_DURATION,
       delay,
       ease: 'Quad.easeIn',
-      onUpdate: () => { entry.animY = fallProxy.d; this.relayout() },
+      onUpdate: () => {
+        entry.animY = fallProxy.d
+        entry.scaleX = fallProxy.s
+        entry.scaleY = fallProxy.s
+        this.relayout()
+      },
       onComplete: () => {
         // Squash on impact, then return to rest
         const sq = { x: 1, y: 1 }

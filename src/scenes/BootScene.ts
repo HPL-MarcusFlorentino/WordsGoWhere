@@ -14,6 +14,9 @@ export class BootScene extends Phaser.Scene {
     this.load.image(TEX.purpleBackTile, ASSETS.purpleBackTile)
     this.load.image(TEX.purpleFrontTile, ASSETS.purpleFrontTile)
     this.load.image(TEX.mergedTile, ASSETS.mergedTile)
+    this.load.image(TEX.selectionGreen, ASSETS.selectionGreen)
+    this.load.image(TEX.selectionYellow, ASSETS.selectionYellow)
+    this.load.image(TEX.selectionRed, ASSETS.selectionRed)
   }
 
   create(): void {

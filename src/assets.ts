@@ -7,6 +7,9 @@ import tileContainer from '../Assets/Gameplay/Tile_Container.webp'
 import purpleBackTile from '../Assets/Gameplay/Purple_Back_Tile.webp'
 import purpleFrontTile from '../Assets/Gameplay/Purple_Front_Tile.webp'
 import mergedTile from '../Assets/Gameplay/Merged_Tile.webp'
+import selectionGreen from '../Assets/Selection/Selection_Green.webp'
+import selectionYellow from '../Assets/Selection/Selection_Yellow.webp'
+import selectionRed from '../Assets/Selection/Selection_Red.webp'
 import balooFont from '../Assets/Font/BALOO-REGULAR.ttf?inline'
 
 export const ASSETS = {
@@ -19,6 +22,9 @@ export const ASSETS = {
   purpleBackTile,
   purpleFrontTile,
   mergedTile,
+  selectionGreen,
+  selectionYellow,
+  selectionRed,
   balooFont
 } as const
 
@@ -31,7 +37,10 @@ export const TEX = {
   tileContainer: 'tile_container',
   purpleBackTile: 'purple_back_tile',
   purpleFrontTile: 'purple_front_tile',
-  mergedTile: 'merged_tile'
+  mergedTile: 'merged_tile',
+  selectionGreen: 'selection_green',
+  selectionYellow: 'selection_yellow',
+  selectionRed: 'selection_red'
 } as const
 
 export const FONT_FAMILY = 'Baloo'

@@ -25,9 +25,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": -778.6668, "y": 0 },
+            "topLeft": { "x": -333.3335, "y": 0 },
             "center": { "x": 1000, "y": 1000 },
-            "size": { "width": 3557.333, "height": 2000 }
+            "size": { "width": 2666.667, "height": 2000 }
           }
         }
       ]
@@ -85,9 +85,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 463.1616, "y": 167.7998 },
-            "center": { "x": 540, "y": 184.9998 },
-            "size": { "width": 153.6769, "height": 34.4 }
+            "topLeft": { "x": 482.4, "y": 167.7999 },
+            "center": { "x": 540, "y": 185 },
+            "size": { "width": 115.2, "height": 34.4 }
           }
         },
 {
@@ -104,9 +104,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 453.1566, "y": 219.6 },
+            "topLeft": { "x": 474.9, "y": 219.6 },
             "center": { "x": 540, "y": 296 },
-            "size": { "width": 173.6868, "height": 152.7999 }
+            "size": { "width": 130.2, "height": 152.7999 }
           },
           "children": [
 {
@@ -127,9 +127,9 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 453.1566, "y": 224.0998 },
-                "center": { "x": 540, "y": 298.2499 },
-                "size": { "width": 173.6868, "height": 148.3 }
+                "topLeft": { "x": 474.9, "y": 224.1001 },
+                "center": { "x": 540, "y": 298.25 },
+                "size": { "width": 130.2, "height": 148.2998 }
               }
             },
 {
@@ -150,9 +150,9 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 453.1566, "y": 259.6 },
+                "topLeft": { "x": 474.9, "y": 259.6 },
                 "center": { "x": 540, "y": 316 },
-                "size": { "width": 173.6868, "height": 112.8 }
+                "size": { "width": 130.2, "height": 112.8 }
               }
             }
           ]
@@ -171,9 +171,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 79.77, "y": 433.5001 },
-            "center": { "x": 229.845, "y": 515 },
-            "size": { "width": 300.15, "height": 163 }
+            "topLeft": { "x": 195, "y": 433.4999 },
+            "center": { "x": 307.5, "y": 515 },
+            "size": { "width": 225, "height": 163 }
           }
         },
 {
@@ -190,9 +190,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 389.925, "y": 433.5001 },
+            "topLeft": { "x": 427.5, "y": 433.4999 },
             "center": { "x": 540, "y": 515 },
-            "size": { "width": 300.15, "height": 163 }
+            "size": { "width": 225, "height": 163 }
           }
         },
 {
@@ -209,9 +209,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 700.08, "y": 433.5001 },
-            "center": { "x": 850.155, "y": 515 },
-            "size": { "width": 300.15, "height": 163 }
+            "topLeft": { "x": 660, "y": 433.4999 },
+            "center": { "x": 772.5, "y": 515 },
+            "size": { "width": 225, "height": 163 }
           }
         },
 {
@@ -228,9 +228,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 79.77, "y": 643.4999 },
-            "center": { "x": 229.845, "y": 725 },
-            "size": { "width": 300.15, "height": 163 }
+            "topLeft": { "x": 195, "y": 643.4999 },
+            "center": { "x": 307.5, "y": 725 },
+            "size": { "width": 225, "height": 163 }
           }
         },
 {
@@ -247,9 +247,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 389.925, "y": 643.4999 },
+            "topLeft": { "x": 427.5, "y": 643.4999 },
             "center": { "x": 540, "y": 725 },
-            "size": { "width": 300.15, "height": 163 }
+            "size": { "width": 225, "height": 163 }
           }
         },
 {
@@ -266,9 +266,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 700.08, "y": 643.4999 },
-            "center": { "x": 850.155, "y": 725 },
-            "size": { "width": 300.15, "height": 163 }
+            "topLeft": { "x": 660, "y": 643.4999 },
+            "center": { "x": 772.5, "y": 725 },
+            "size": { "width": 225, "height": 163 }
           }
         },
 {
@@ -285,9 +285,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 95.4445, "y": 1102.667 },
+            "topLeft": { "x": 206.75, "y": 1102.667 },
             "center": { "x": 540, "y": 1385 },
-            "size": { "width": 889.1111, "height": 564.6668 }
+            "size": { "width": 666.5, "height": 564.6668 }
           }
         },
 {
@@ -304,9 +304,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 385.923, "y": 874 },
+            "topLeft": { "x": 424.5, "y": 874 },
             "center": { "x": 540, "y": 960 },
-            "size": { "width": 308.154, "height": 172 }
+            "size": { "width": 231, "height": 172 }
           },
           "children": [
 {
@@ -327,9 +327,9 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 385.923, "y": 874 },
+                "topLeft": { "x": 424.5, "y": 874 },
                 "center": { "x": 540, "y": 945 },
-                "size": { "width": 308.154, "height": 142 }
+                "size": { "width": 231, "height": 142 }
               }
             }
           ]
@@ -348,9 +348,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 428.768, "y": 1156.471 },
+            "topLeft": { "x": 456.6176, "y": 1156.471 },
             "center": { "x": 540, "y": 1240 },
-            "size": { "width": 222.4641, "height": 167.0588 }
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -371,9 +371,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 428.768, "y": 1156.471 },
+                "topLeft": { "x": 456.6176, "y": 1156.471 },
                 "center": { "x": 540, "y": 1225 },
-                "size": { "width": 222.4641, "height": 137.0588 }
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 453, "y": 1145.5 },
+                "center": { "x": 540, "y": 1235.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -392,9 +411,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 428.768, "y": 1126.471 },
+            "topLeft": { "x": 456.6176, "y": 1126.471 },
             "center": { "x": 540, "y": 1210 },
-            "size": { "width": 222.4641, "height": 167.0588 }
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -415,9 +434,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 428.768, "y": 1126.471 },
+                "topLeft": { "x": 456.6176, "y": 1126.471 },
                 "center": { "x": 540, "y": 1195 },
-                "size": { "width": 222.4641, "height": 137.0588 }
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 453, "y": 1115.5 },
+                "center": { "x": 540, "y": 1205.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -436,9 +474,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 428.768, "y": 1456.47 },
+            "topLeft": { "x": 456.6176, "y": 1456.471 },
             "center": { "x": 540, "y": 1540 },
-            "size": { "width": 222.4641, "height": 167.0589 }
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -459,9 +497,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 428.768, "y": 1456.47 },
+                "topLeft": { "x": 456.6176, "y": 1456.471 },
                 "center": { "x": 540, "y": 1525 },
-                "size": { "width": 222.4641, "height": 137.0589 }
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 453, "y": 1445.5 },
+                "center": { "x": 540, "y": 1535.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -480,9 +537,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 428.768, "y": 1426.47 },
+            "topLeft": { "x": 456.6176, "y": 1426.471 },
             "center": { "x": 540, "y": 1510 },
-            "size": { "width": 222.4641, "height": 167.0589 }
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -503,9 +560,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 428.768, "y": 1426.47 },
+                "topLeft": { "x": 456.6176, "y": 1426.471 },
                 "center": { "x": 540, "y": 1495 },
-                "size": { "width": 222.4641, "height": 137.0589 }
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 453, "y": 1415.5 },
+                "center": { "x": 540, "y": 1505.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -524,9 +600,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 173.6404, "y": 1242.471 },
-            "center": { "x": 284.8725, "y": 1326 },
-            "size": { "width": 222.4641, "height": 167.0588 }
+            "topLeft": { "x": 265.3676, "y": 1242.471 },
+            "center": { "x": 348.75, "y": 1326 },
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -547,9 +623,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 173.6404, "y": 1242.471 },
-                "center": { "x": 284.8725, "y": 1311 },
-                "size": { "width": 222.4641, "height": 137.0588 }
+                "topLeft": { "x": 265.3676, "y": 1242.471 },
+                "center": { "x": 348.75, "y": 1311 },
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 261.75, "y": 1231.5 },
+                "center": { "x": 348.75, "y": 1321.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -568,9 +663,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 173.6404, "y": 1212.471 },
-            "center": { "x": 284.8725, "y": 1296 },
-            "size": { "width": 222.4641, "height": 167.0588 }
+            "topLeft": { "x": 265.3676, "y": 1212.471 },
+            "center": { "x": 348.75, "y": 1296 },
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -591,9 +686,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 173.6404, "y": 1212.471 },
-                "center": { "x": 284.8725, "y": 1281 },
-                "size": { "width": 222.4641, "height": 137.0588 }
+                "topLeft": { "x": 265.3676, "y": 1212.471 },
+                "center": { "x": 348.75, "y": 1281 },
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 261.75, "y": 1201.5 },
+                "center": { "x": 348.75, "y": 1291.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -612,9 +726,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 683.8954, "y": 1242.471 },
-            "center": { "x": 795.1275, "y": 1326 },
-            "size": { "width": 222.4642, "height": 167.0588 }
+            "topLeft": { "x": 647.8676, "y": 1242.471 },
+            "center": { "x": 731.25, "y": 1326 },
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -635,9 +749,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 683.8954, "y": 1242.471 },
-                "center": { "x": 795.1275, "y": 1311 },
-                "size": { "width": 222.4642, "height": 137.0588 }
+                "topLeft": { "x": 647.8676, "y": 1242.471 },
+                "center": { "x": 731.25, "y": 1311 },
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 644.25, "y": 1231.5 },
+                "center": { "x": 731.25, "y": 1321.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -656,9 +789,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 683.8954, "y": 1212.471 },
-            "center": { "x": 795.1275, "y": 1296 },
-            "size": { "width": 222.4642, "height": 167.0588 }
+            "topLeft": { "x": 647.8676, "y": 1212.471 },
+            "center": { "x": 731.25, "y": 1296 },
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -679,9 +812,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 683.8954, "y": 1212.471 },
-                "center": { "x": 795.1275, "y": 1281 },
-                "size": { "width": 222.4642, "height": 137.0588 }
+                "topLeft": { "x": 647.8676, "y": 1212.471 },
+                "center": { "x": 731.25, "y": 1281 },
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 644.25, "y": 1201.5 },
+                "center": { "x": 731.25, "y": 1291.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -700,9 +852,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 173.6404, "y": 1442.471 },
-            "center": { "x": 284.8725, "y": 1526 },
-            "size": { "width": 222.4641, "height": 167.0588 }
+            "topLeft": { "x": 265.3676, "y": 1442.471 },
+            "center": { "x": 348.75, "y": 1526 },
+            "size": { "width": 166.7647, "height": 167.0589 }
           },
           "children": [
 {
@@ -723,9 +875,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 173.6404, "y": 1442.471 },
-                "center": { "x": 284.8725, "y": 1511 },
-                "size": { "width": 222.4641, "height": 137.0588 }
+                "topLeft": { "x": 265.3676, "y": 1442.471 },
+                "center": { "x": 348.75, "y": 1511 },
+                "size": { "width": 166.7647, "height": 137.0589 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 261.75, "y": 1431.5 },
+                "center": { "x": 348.75, "y": 1521.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -744,9 +915,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 173.6404, "y": 1412.47 },
-            "center": { "x": 284.8725, "y": 1496 },
-            "size": { "width": 222.4641, "height": 167.0589 }
+            "topLeft": { "x": 265.3676, "y": 1412.471 },
+            "center": { "x": 348.75, "y": 1496 },
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -767,9 +938,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 173.6404, "y": 1412.47 },
-                "center": { "x": 284.8725, "y": 1481 },
-                "size": { "width": 222.4641, "height": 137.0589 }
+                "topLeft": { "x": 265.3676, "y": 1412.471 },
+                "center": { "x": 348.75, "y": 1481 },
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 261.75, "y": 1401.5 },
+                "center": { "x": 348.75, "y": 1491.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -788,9 +978,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 683.8954, "y": 1442.471 },
-            "center": { "x": 795.1275, "y": 1526 },
-            "size": { "width": 222.4642, "height": 167.0588 }
+            "topLeft": { "x": 647.8676, "y": 1442.471 },
+            "center": { "x": 731.25, "y": 1526 },
+            "size": { "width": 166.7647, "height": 167.0589 }
           },
           "children": [
 {
@@ -811,9 +1001,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 683.8954, "y": 1442.471 },
-                "center": { "x": 795.1275, "y": 1511 },
-                "size": { "width": 222.4642, "height": 137.0588 }
+                "topLeft": { "x": 647.8676, "y": 1442.471 },
+                "center": { "x": 731.25, "y": 1511 },
+                "size": { "width": 166.7647, "height": 137.0589 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 644.25, "y": 1431.5 },
+                "center": { "x": 731.25, "y": 1521.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]
@@ -832,9 +1041,9 @@
             "pivot": { "x": 0.5, "y": 0.5 }
           },
           "worldRect": {
-            "topLeft": { "x": 683.8954, "y": 1412.47 },
-            "center": { "x": 795.1275, "y": 1496 },
-            "size": { "width": 222.4642, "height": 167.0589 }
+            "topLeft": { "x": 647.8676, "y": 1412.471 },
+            "center": { "x": 731.25, "y": 1496 },
+            "size": { "width": 166.7647, "height": 167.0588 }
           },
           "children": [
 {
@@ -855,9 +1064,28 @@
                 "pivot": { "x": 0.5, "y": 0.5 }
               },
               "worldRect": {
-                "topLeft": { "x": 683.8954, "y": 1412.47 },
-                "center": { "x": 795.1275, "y": 1481 },
-                "size": { "width": 222.4642, "height": 137.0589 }
+                "topLeft": { "x": 647.8676, "y": 1412.471 },
+                "center": { "x": 731.25, "y": 1481 },
+                "size": { "width": 166.7647, "height": 137.0588 }
+              }
+            },
+{
+              "name": "Glow",
+              "type": "Image",
+              "sprite": "Selection_Green.png",
+              "color": { "r": 1, "g": 1, "b": 1, "a": 1 },
+              "preserveAspect": false,
+              "rectTransform": {
+                "anchorMin": { "x": 0.5, "y": 0.5 },
+                "anchorMax": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 4.5 },
+                "sizeDelta": { "x": 232, "y": 180 },
+                "pivot": { "x": 0.5, "y": 0.5 }
+              },
+              "worldRect": {
+                "topLeft": { "x": 644.25, "y": 1401.5 },
+                "center": { "x": 731.25, "y": 1491.5 },
+                "size": { "width": 174, "height": 180 }
               }
             }
           ]

@@ -28,15 +28,20 @@ function sizeGame(): void {
   const { w, h } = currentViewport()
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
   recomputeResponsive(w * dpr, h * dpr)
-  game.scale.resize(w * dpr, h * dpr)
-  for (const scene of game.scene.getScenes(true)) {
-    const relayout = (scene as any).relayout
-    if (typeof relayout === 'function') relayout.call(scene)
-  }
+  // CSS size must be set BEFORE scale.resize — Phaser's ScaleManager reads
+  // canvas.getBoundingClientRect() when computing the pointer-to-canvas
+  // coord mapping; a stale CSS size means pointer events miss hitboxes
+  // after rotation until the next refresh.
   const canvas = game.canvas
   if (canvas) {
     canvas.style.width  = w + 'px'
     canvas.style.height = h + 'px'
+  }
+  game.scale.resize(w * dpr, h * dpr)
+  game.scale.refresh()
+  for (const scene of game.scene.getScenes(true)) {
+    const relayout = (scene as any).relayout
+    if (typeof relayout === 'function') relayout.call(scene)
   }
 }
 
