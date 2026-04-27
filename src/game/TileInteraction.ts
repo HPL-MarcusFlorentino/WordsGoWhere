@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { TEX, FONT_FAMILY } from '../assets'
 import { sx, sy, sd, unsx, unsy } from '../utils/responsive'
 import type { GameplayLayout, GameplayTile, SlotInfo } from './GameplayLayout'
+import { spawnStarburst } from './StarburstFX'
 
 const VALID_WORDS = ['RAINBOW', 'SUN', 'CLOUD', 'APPLE', 'MANGO', 'ORANGE']
 
@@ -71,23 +72,6 @@ const MERGE_ANCHOR_DESIGN_Y = 850
 const FLIP_DOWN_DURATION = 140
 const FLIP_UP_DURATION = 160
 const FLIP_JUMP_HEIGHT = 70
-
-// Merge burst VFX (design px / ms)
-const BURST_FLASH_START_R = 40
-const BURST_FLASH_END_SCALE = 3.2
-const BURST_FLASH_DURATION = 320
-const BURST_RING_START_R = 60
-const BURST_RING_THICKNESS = 14
-const BURST_RING_END_SCALE = 3.4
-const BURST_RING_DURATION = 520
-const BURST_RING_DELAY = 40
-const BURST_STAR_COUNT = 9
-const BURST_STAR_SIZE_MIN = 16
-const BURST_STAR_SIZE_MAX = 34
-const BURST_STAR_DIST_MIN = 70
-const BURST_STAR_DIST_MAX = 150
-const BURST_STAR_DURATION_MIN = 420
-const BURST_STAR_DURATION_MAX = 620
 
 type DragState = {
   tile: GameplayTile
@@ -546,9 +530,11 @@ export class TileInteraction {
 
     container.add([img, label])
     this.layout.getRoot().add(container)
-    this.layout.getRoot().bringToTop(container)
 
-    this.playMergeBurst(MERGE_ANCHOR_DESIGN_X, MERGE_ANCHOR_DESIGN_Y)
+    // Burst spawns first, then the merged tile is brought to top so the tile
+    // renders on top of the VFX (the burst surrounds the tile, doesn't cover it).
+    spawnStarburst(this.scene, this.layout.getRoot(), MERGE_ANCHOR_DESIGN_X, MERGE_ANCHOR_DESIGN_Y, false)
+    this.layout.getRoot().bringToTop(container)
 
     const mv: MergedVisual = {
       container, img, label,
@@ -661,89 +647,6 @@ export class TileInteraction {
     // After RAINBOW merge, reveal every remaining top tile.
     if (word === 'RAINBOW') this.revealAllTops()
     this.applyFaceState()
-  }
-
-  private playMergeBurst(designX: number, designY: number): void {
-    const root = this.layout.getRoot()
-    const cx = sx(designX)
-    const cy = sy(designY)
-
-    const flash = this.scene.add.graphics()
-    flash.fillStyle(0xffffff, 1)
-    flash.fillCircle(0, 0, sd(BURST_FLASH_START_R))
-    flash.setPosition(cx, cy)
-    flash.setBlendMode(Phaser.BlendModes.ADD)
-    root.add(flash)
-    root.bringToTop(flash)
-    this.scene.tweens.add({
-      targets: flash,
-      scale: BURST_FLASH_END_SCALE,
-      alpha: 0,
-      duration: BURST_FLASH_DURATION,
-      ease: 'Cubic.easeOut',
-      onComplete: () => flash.destroy()
-    })
-
-    const ring = this.scene.add.graphics()
-    ring.lineStyle(sd(BURST_RING_THICKNESS), 0xffffff, 0.95)
-    ring.strokeCircle(0, 0, sd(BURST_RING_START_R))
-    ring.setPosition(cx, cy)
-    ring.setBlendMode(Phaser.BlendModes.ADD)
-    ring.setAlpha(0)
-    root.add(ring)
-    root.bringToTop(ring)
-    this.scene.tweens.add({
-      targets: ring,
-      alpha: { from: 0.95, to: 0 },
-      scale: { from: 0.5, to: BURST_RING_END_SCALE },
-      duration: BURST_RING_DURATION,
-      delay: BURST_RING_DELAY,
-      ease: 'Sine.easeOut',
-      onComplete: () => ring.destroy()
-    })
-
-    for (let i = 0; i < BURST_STAR_COUNT; i++) {
-      const angle = (i / BURST_STAR_COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.5
-      const dist = sd(BURST_STAR_DIST_MIN + Math.random() * (BURST_STAR_DIST_MAX - BURST_STAR_DIST_MIN))
-      const size = BURST_STAR_SIZE_MIN + Math.random() * (BURST_STAR_SIZE_MAX - BURST_STAR_SIZE_MIN)
-      const star = this.createSparkleStar(sd(size))
-      star.setPosition(cx, cy)
-      star.setBlendMode(Phaser.BlendModes.ADD)
-      root.add(star)
-      root.bringToTop(star)
-      const duration = BURST_STAR_DURATION_MIN + Math.random() * (BURST_STAR_DURATION_MAX - BURST_STAR_DURATION_MIN)
-      this.scene.tweens.add({
-        targets: star,
-        x: cx + Math.cos(angle) * dist,
-        y: cy + Math.sin(angle) * dist,
-        scale: 0.2,
-        alpha: 0,
-        rotation: (Math.random() - 0.5) * 1.2,
-        duration,
-        delay: Math.random() * 80,
-        ease: 'Cubic.easeOut',
-        onComplete: () => star.destroy()
-      })
-    }
-  }
-
-  private createSparkleStar(size: number): Phaser.GameObjects.Graphics {
-    const g = this.scene.add.graphics()
-    const r = size
-    const w = size * 0.16
-    g.fillStyle(0xffffff, 1)
-    g.beginPath()
-    g.moveTo(0, -r)
-    g.lineTo(w, -w)
-    g.lineTo(r, 0)
-    g.lineTo(w, w)
-    g.lineTo(0, r)
-    g.lineTo(-w, w)
-    g.lineTo(-r, 0)
-    g.lineTo(-w, -w)
-    g.closePath()
-    g.fillPath()
-    return g
   }
 
   private onPhase1Complete(): void {

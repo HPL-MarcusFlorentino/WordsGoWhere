@@ -16,6 +16,11 @@ import selectionYellow from '../Assets/Selection/Selection_Yellow.webp'
 import selectionRed from '../Assets/Selection/Selection_Red.webp'
 import balooFont from '../Assets/Font/BALOO-REGULAR.ttf?inline'
 
+const starburstModules = import.meta.glob('../Assets/Starburst PNG Sequence WebP/*.webp', { eager: true, as: 'url' }) as Record<string, string>
+const starburstFrames: string[] = Object.keys(starburstModules)
+  .sort()
+  .map(k => starburstModules[k])
+
 export const ASSETS = {
   background,
   introLogo,
@@ -33,6 +38,7 @@ export const ASSETS = {
   selectionGreen,
   selectionYellow,
   selectionRed,
+  starburstFrames,
   balooFont
 } as const
 
@@ -52,7 +58,16 @@ export const TEX = {
   greenCategoryTile: 'green_category_tile',
   selectionGreen: 'selection_green',
   selectionYellow: 'selection_yellow',
-  selectionRed: 'selection_red'
+  selectionRed: 'selection_red',
+  starburst: 'starburst'  // base key — full key per frame is `starburst_${i}`
 } as const
+
+export const STARBURST_FRAME_COUNT = 34
+// Source frame indices (1-based, original 30fps timeline) for each unique frame.
+// Used to derive per-frame durations so duplicated source frames hold longer.
+export const STARBURST_SOURCE_INDICES: readonly number[] = [
+  2, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30,
+  31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 44, 46, 48
+]
 
 export const FONT_FAMILY = 'Baloo'

@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { ASSETS, TEX } from '../assets'
+import { ASSETS, TEX, STARBURST_FRAME_COUNT } from '../assets'
 
 export class BootScene extends Phaser.Scene {
   constructor() { super('Boot') }
@@ -21,6 +21,9 @@ export class BootScene extends Phaser.Scene {
     this.load.image(TEX.selectionGreen, ASSETS.selectionGreen)
     this.load.image(TEX.selectionYellow, ASSETS.selectionYellow)
     this.load.image(TEX.selectionRed, ASSETS.selectionRed)
+    for (let i = 0; i < STARBURST_FRAME_COUNT; i++) {
+      this.load.image(`${TEX.starburst}_${i}`, ASSETS.starburstFrames[i])
+    }
   }
 
   create(): void {
