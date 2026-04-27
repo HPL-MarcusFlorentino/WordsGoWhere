@@ -2,7 +2,11 @@ import Phaser from 'phaser'
 import { AUDIO } from '../assets'
 
 const BGM_VOLUME = 0.225
-const SFX_VOLUME = 0.25
+const MERGE_VOLUME = 0.25
+const TILE_FALL_VOLUME = 0.25
+const PICK_UP_VOLUME = 0.25
+const SLOTTED_VOLUME = 0.9
+const WRONG_MERGE_VOLUME = 0.25
 
 export class SoundManager {
   private bgm: Phaser.Sound.BaseSound | null = null
@@ -24,15 +28,15 @@ export class SoundManager {
     } catch {}
   }
 
-  private safePlay(key: string): void {
-    try { this.scene.sound.play(key, { volume: SFX_VOLUME }) } catch {}
+  private safePlay(key: string, volume: number): void {
+    try { this.scene.sound.play(key, { volume }) } catch {}
   }
 
-  playMerge(): void { this.safePlay(AUDIO.merge) }
-  playTileFall(): void { if (this.interacted) this.safePlay(AUDIO.tileFall) }
-  playPickUp(): void { this.safePlay(AUDIO.pickUp) }
-  playSlotted(): void { this.safePlay(AUDIO.slotted) }
-  playWrong(): void { this.safePlay(AUDIO.wrongMerge) }
+  playMerge(): void { this.safePlay(AUDIO.merge, MERGE_VOLUME) }
+  playTileFall(): void { if (this.interacted) this.safePlay(AUDIO.tileFall, TILE_FALL_VOLUME) }
+  playPickUp(): void { this.safePlay(AUDIO.pickUp, PICK_UP_VOLUME) }
+  playSlotted(): void { this.safePlay(AUDIO.slotted, SLOTTED_VOLUME) }
+  playWrong(): void { this.safePlay(AUDIO.wrongMerge, WRONG_MERGE_VOLUME) }
 
   private onVisibilityChange = (): void => {
     try {

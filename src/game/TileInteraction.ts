@@ -821,7 +821,10 @@ export class TileInteraction {
     if (!d) return
     const target = d.hoverTarget
     this.phase2Drag = null
-    if (target) this.swapMergedVisuals(d.mv, target)
+    if (target) {
+      this.layout.decrementMoves()
+      this.swapMergedVisuals(d.mv, target)
+    }
     else this.returnMergedToSlot(d.mv)
   }
 

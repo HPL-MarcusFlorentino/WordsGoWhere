@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { TEX } from '../assets'
 import { DEPTH } from '../constants'
 import { sx, sy, sd } from '../utils/responsive'
+import { SoundManager } from './SoundManager'
 
 const LOGO_W = 954.6667
 const LOGO_H = 640.6667
@@ -34,7 +35,7 @@ export class EndCard {
   private tapActive = false
   private onTap: (() => void) | null = null
 
-  constructor(private scene: Phaser.Scene) {
+  constructor(private scene: Phaser.Scene, private sound: SoundManager) {
     this.logo = scene.add.image(0, 0, TEX.introLogo)
       .setOrigin(0.5, 0.5)
       .setDepth(DEPTH.ENDCARD)
@@ -73,6 +74,8 @@ export class EndCard {
     this.logoMult = 1.5
     this.tapActive = true
     this.relayout()
+
+    this.sound.playSlotted()
 
     this.scene.tweens.add({
       targets: this.logo,

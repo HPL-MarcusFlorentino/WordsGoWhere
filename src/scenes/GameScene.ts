@@ -39,7 +39,7 @@ export class GameScene extends Phaser.Scene {
     this.gameplay = new GameplayLayout(this, this.sound_)
     this.introLogo = new IntroLogo(this)
     this.interaction = new TileInteraction(this, this.gameplay, this.sound_)
-    this.endCard = new EndCard(this)
+    this.endCard = new EndCard(this, this.sound_)
     this.tutorial = new TutorialHand(this)
 
     this.interaction.setOnPhase1Solved(() => {
