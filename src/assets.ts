@@ -14,7 +14,15 @@ import greenCategoryTile from '../Assets/Gameplay/Green_Category_Tile.webp'
 import selectionGreen from '../Assets/Selection/Selection_Green.webp'
 import selectionYellow from '../Assets/Selection/Selection_Yellow.webp'
 import selectionRed from '../Assets/Selection/Selection_Red.webp'
+import endCardCta from '../Assets/End Card/playnow_grn.webp'
+import tutorialHand from '../Assets/Gameplay/Tutorial Hand.png'
 import balooFont from '../Assets/Font/BALOO-REGULAR.ttf?inline'
+import bgmSfx from '../Assets/SFX/BGM.mp3'
+import mergeSfx from '../Assets/SFX/Merge.mp3'
+import tileFallSfx from '../Assets/SFX/Tile Fall.mp3'
+import pickUpSfx from '../Assets/SFX/Tile Pick Up.mp3'
+import slottedSfx from '../Assets/SFX/Tile Slotted.mp3'
+import wrongMergeSfx from '../Assets/SFX/Wrong Merge.mp3'
 
 const starburstModules = import.meta.glob('../Assets/Starburst PNG Sequence WebP/*.webp', { eager: true, as: 'url' }) as Record<string, string>
 const starburstFrames: string[] = Object.keys(starburstModules)
@@ -38,8 +46,16 @@ export const ASSETS = {
   selectionGreen,
   selectionYellow,
   selectionRed,
+  endCardCta,
+  tutorialHand,
   starburstFrames,
-  balooFont
+  balooFont,
+  bgmSfx,
+  mergeSfx,
+  tileFallSfx,
+  pickUpSfx,
+  slottedSfx,
+  wrongMergeSfx
 } as const
 
 export const TEX = {
@@ -59,7 +75,18 @@ export const TEX = {
   selectionGreen: 'selection_green',
   selectionYellow: 'selection_yellow',
   selectionRed: 'selection_red',
+  endCardCta: 'endcard_cta',
+  tutorialHand: 'tutorial_hand',
   starburst: 'starburst'  // base key — full key per frame is `starburst_${i}`
+} as const
+
+export const AUDIO = {
+  bgm: 'sfx_bgm',
+  merge: 'sfx_merge',
+  tileFall: 'sfx_tile_fall',
+  pickUp: 'sfx_pick_up',
+  slotted: 'sfx_slotted',
+  wrongMerge: 'sfx_wrong_merge'
 } as const
 
 export const STARBURST_FRAME_COUNT = 34

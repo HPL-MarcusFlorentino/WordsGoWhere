@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { ASSETS, TEX, STARBURST_FRAME_COUNT } from '../assets'
+import { ASSETS, TEX, AUDIO, STARBURST_FRAME_COUNT } from '../assets'
 
 export class BootScene extends Phaser.Scene {
   constructor() { super('Boot') }
@@ -21,9 +21,17 @@ export class BootScene extends Phaser.Scene {
     this.load.image(TEX.selectionGreen, ASSETS.selectionGreen)
     this.load.image(TEX.selectionYellow, ASSETS.selectionYellow)
     this.load.image(TEX.selectionRed, ASSETS.selectionRed)
+    this.load.image(TEX.endCardCta, ASSETS.endCardCta)
+    this.load.image(TEX.tutorialHand, ASSETS.tutorialHand)
     for (let i = 0; i < STARBURST_FRAME_COUNT; i++) {
       this.load.image(`${TEX.starburst}_${i}`, ASSETS.starburstFrames[i])
     }
+    this.load.audio(AUDIO.bgm, ASSETS.bgmSfx)
+    this.load.audio(AUDIO.merge, ASSETS.mergeSfx)
+    this.load.audio(AUDIO.tileFall, ASSETS.tileFallSfx)
+    this.load.audio(AUDIO.pickUp, ASSETS.pickUpSfx)
+    this.load.audio(AUDIO.slotted, ASSETS.slottedSfx)
+    this.load.audio(AUDIO.wrongMerge, ASSETS.wrongMergeSfx)
   }
 
   create(): void {

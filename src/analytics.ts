@@ -7,6 +7,7 @@ export type AnalyticsEvent =
   | 'ENDCARD_SHOWN'
   | 'CHALLENGE_STARTED'
   | 'CHALLENGE_SOLVED'
+  | 'CHALLENGE_FAILED'
 
 export function trackEvent(event: AnalyticsEvent): void {
   try {

@@ -2,7 +2,10 @@ import Phaser from 'phaser'
 import { TEX, FONT_FAMILY } from '../assets'
 import { sx, sy, sd, unsx, unsy } from '../utils/responsive'
 import type { GameplayLayout, GameplayTile, SlotInfo } from './GameplayLayout'
+import type { SoundManager } from './SoundManager'
 import { spawnStarburst } from './StarburstFX'
+import { spawnConfettiBurst } from './ConfettiBurst'
+import { DESIGN_WIDTH } from '../constants'
 
 const VALID_WORDS = ['RAINBOW', 'SUN', 'CLOUD', 'APPLE', 'MANGO', 'ORANGE']
 
@@ -22,6 +25,10 @@ const CATEGORY_BAR_DESIGN_H = 170
 const CATEGORY_BAR_LEFT_DX = 60              // design-x of bar's left edge (origin 0, 0.5)
 const CATEGORY_BAR_START_SCALE_X_MULT = 0.05 // fraction of full width at spawn
 const CATEGORY_BAR_DURATION = 620
+const CATEGORY_JUMP_HEIGHT = 35      // design px peak displacement during jump
+const CATEGORY_JUMP_UP_DURATION = 200
+const CATEGORY_JUMP_DOWN_DURATION = 220
+const WIN_AFTER_CONFETTI_DELAY = 1200
 const CATEGORY_TITLE_FONT_SIZE = 62
 const CATEGORY_WORDS_FONT_SIZE = 32
 const CATEGORY_TITLE_COLOR = '#ffffff'
@@ -127,6 +134,8 @@ type CategoryBar = {
   words: Phaser.GameObjects.Text
   rowDesignY: number
   s: number
+  jumpDY: number
+  tiles: MergedVisual[]
 }
 
 export class TileInteraction {
@@ -143,8 +152,99 @@ export class TileInteraction {
   private phase2Swapping = false
   private phase2Drag: Phase2Drag | null = null
   private categoryBars: CategoryBar[] = []
+  private pendingCategoryBars = 0
+  private completedBarDesignYs: number[] = []
+  private winFired = false
+  private failFired = false
+  private onWin: (() => void) | null = null
+  private onPhase1Solved: (() => void) | null = null
+  private onPhase2Started: (() => void) | null = null
+  private onPhaseFailed: (() => void) | null = null
+  private onPhase1Interaction: (() => void) | null = null
+  private onPhase2Interaction: (() => void) | null = null
 
-  constructor(private scene: Phaser.Scene, private layout: GameplayLayout) {}
+  constructor(private scene: Phaser.Scene, private layout: GameplayLayout, private sound: SoundManager) {}
+
+  setOnWin(cb: () => void): void {
+    this.onWin = cb
+  }
+
+  setOnPhase1Solved(cb: () => void): void {
+    this.onPhase1Solved = cb
+  }
+
+  setOnPhase2Started(cb: () => void): void {
+    this.onPhase2Started = cb
+  }
+
+  setOnPhaseFailed(cb: () => void): void {
+    this.onPhaseFailed = cb
+  }
+
+  setOnPhase1Interaction(cb: () => void): void {
+    this.onPhase1Interaction = cb
+  }
+
+  setOnPhase2Interaction(cb: () => void): void {
+    this.onPhase2Interaction = cb
+  }
+
+  getPhase1TutorialPair(): { from: { x: number; y: number }; to: { x: number; y: number } } | null {
+    if (this.mergeInProgress) return null
+    const active = this.tiles.filter(t =>
+      t.container.active &&
+      t.container.visible &&
+      this.faceUp.has(t) &&
+      !this.isTopBlocked(t)
+    )
+    for (let i = 0; i < active.length; i++) {
+      for (let j = 0; j < active.length; j++) {
+        if (i === j) continue
+        const a = active[i]
+        const b = active[j]
+        if (VALID_WORDS.includes(a.text + b.text)) {
+          return {
+            from: { x: a.baseDesignX, y: a.baseDesignY },
+            to:   { x: b.baseDesignX, y: b.baseDesignY }
+          }
+        }
+      }
+    }
+    return null
+  }
+
+  getPhase2TutorialPair(): { from: { x: number; y: number }; to: { x: number; y: number } } | null {
+    const row1: MergedVisual[] = []
+    const row2: MergedVisual[] = []
+    for (const mv of this.mergedVisuals) {
+      if (mv.slotIndex < 0) continue
+      if (this.slots[mv.slotIndex].row === 1) row1.push(mv)
+      else row2.push(mv)
+    }
+    if (row1.length !== 3 || row2.length !== 3) return null
+
+    const skyInRow1 = row1.filter(mv => CATEGORY_SKY.has(mv.word)).length
+    const fruitsInRow1 = row1.filter(mv => CATEGORY_FRUITS.has(mv.word)).length
+    const row1Cat = skyInRow1 >= fruitsInRow1 ? CATEGORY_SKY : CATEGORY_FRUITS
+
+    const misplacedRow1 = row1.find(mv => !row1Cat.has(mv.word))
+    const misplacedRow2 = row2.find(mv => row1Cat.has(mv.word))
+    if (!misplacedRow1 || !misplacedRow2) return null
+
+    const offY = this.layout.getSlotsYOffset()
+    return {
+      from: { x: misplacedRow1.designX, y: misplacedRow1.designY + offY },
+      to:   { x: misplacedRow2.designX, y: misplacedRow2.designY + offY }
+    }
+  }
+
+  private checkOutOfMoves(): void {
+    if (this.failFired || this.winFired) return
+    if (this.layout.getMovesRemaining() > 0) return
+    if (this.occupiedSlots.size === this.slots.length) return
+    this.failFired = true
+    this.onPhaseFailed?.()
+  }
 
   relayout(): void {
     for (const mt of this.mergingTiles) {
@@ -157,14 +257,14 @@ export class TileInteraction {
   private applyCategoryBar(cb: CategoryBar): void {
     const offY = this.layout.getSlotsYOffset()
     const s = cb.s
-    const rowY = sy(cb.rowDesignY + offY)
-    cb.bar.setPosition(sx(CATEGORY_BAR_LEFT_DX), rowY)
+    const baseDY = cb.rowDesignY + offY + cb.jumpDY
+    cb.bar.setPosition(sx(CATEGORY_BAR_LEFT_DX), sy(baseDY))
     cb.bar.setDisplaySize(sd(CATEGORY_BAR_DESIGN_W * s), sd(CATEGORY_BAR_DESIGN_H))
     const centerDX = CATEGORY_BAR_LEFT_DX + CATEGORY_BAR_DESIGN_W * s / 2
     const cx = sx(centerDX)
-    cb.title.setPosition(cx, sy(cb.rowDesignY + offY + CATEGORY_TITLE_OFFSET_Y * s))
+    cb.title.setPosition(cx, sy(baseDY + CATEGORY_TITLE_OFFSET_Y * s))
     cb.title.setFontSize(sd(CATEGORY_TITLE_FONT_SIZE * s))
-    cb.words.setPosition(cx, sy(cb.rowDesignY + offY + CATEGORY_WORDS_OFFSET_Y * s))
+    cb.words.setPosition(cx, sy(baseDY + CATEGORY_WORDS_OFFSET_Y * s))
     cb.words.setFontSize(sd(CATEGORY_WORDS_FONT_SIZE * s))
   }
 
@@ -285,6 +385,8 @@ export class TileInteraction {
     if (!tile.container.visible) return
     if (!this.faceUp.has(tile)) return
 
+    this.onPhase1Interaction?.()
+
     const root = this.layout.getRoot()
     const originalIndex = root.getIndex(tile.container)
 
@@ -307,6 +409,7 @@ export class TileInteraction {
       hoverGlow: null,
       originalIndex
     }
+    this.sound.playPickUp()
   }
 
   private onPointerMove(p: Phaser.Input.Pointer): void {
@@ -389,6 +492,7 @@ export class TileInteraction {
 
   private rejectInvalidPair(dragged: GameplayTile, target: GameplayTile, originalIndex: number): void {
     this.mergeInProgress = true
+    this.sound.playWrong()
     const mkGlow = (t: GameplayTile) => {
       const g = this.scene.add.image(0, sd(GLOW_OFFSET_Y), TEX.selectionRed).setOrigin(0.5, 0.5)
       g.setDisplaySize(sd(GLOW_SIZE.w), sd(GLOW_SIZE.h))
@@ -410,6 +514,7 @@ export class TileInteraction {
           ga.destroy()
           gb.destroy()
           this.mergeInProgress = false
+          this.checkOutOfMoves()
         })
       }
     })
@@ -510,6 +615,7 @@ export class TileInteraction {
     // Unlock input the moment the merged word appears — the subsequent
     // stretch + fly-to-slot animations no longer block a fresh merge.
     this.mergeInProgress = false
+    this.sound.playMerge()
     const container = this.scene.add.container(sx(MERGE_ANCHOR_DESIGN_X), sy(MERGE_ANCHOR_DESIGN_Y))
     const img = this.scene.add.image(0, 0, TEX.mergedTile).setOrigin(0.5, 0.5)
     img.setDisplaySize(sd(MERGED_TILE_SIZE.w), sd(MERGED_TILE_SIZE.h))
@@ -608,6 +714,7 @@ export class TileInteraction {
       onComplete: () => {
         mv.designX = endDX
         mv.designY = endDY
+        this.sound.playSlotted()
         this.scene.tweens.add({
           targets: mv.container,
           scaleX: 0.9,
@@ -624,6 +731,7 @@ export class TileInteraction {
               easeParams: [2],
               onComplete: () => {
                 if (this.occupiedSlots.size === this.slots.length) this.onPhase1Complete()
+                else this.checkOutOfMoves()
               }
             })
           }
@@ -651,6 +759,7 @@ export class TileInteraction {
 
   private onPhase1Complete(): void {
     this.mergeInProgress = true  // block any residual input; all tiles are merged anyway
+    this.onPhase1Solved?.()
     this.scene.time.delayedCall(120, () => {
       this.layout.playOutro(() => this.enablePhase2(), () => this.relayout())
     })
@@ -662,11 +771,15 @@ export class TileInteraction {
       if (!mv.img.input) mv.img.setInteractive()
       mv.img.on('pointerdown', (p: Phaser.Input.Pointer) => this.onPhase2PointerDown(mv, p))
     }
+    this.onPhase2Started?.()
   }
 
   private onPhase2PointerDown(mv: MergedVisual, p: Phaser.Input.Pointer): void {
     if (!this.phase2Enabled || this.phase2Swapping || this.phase2Drag) return
     if (mv.locked) return
+
+    this.onPhase2Interaction?.()
+
     this.phase2Drag = {
       mv,
       pointerStartX: p.x,
@@ -676,6 +789,7 @@ export class TileInteraction {
       hoverTarget: null
     }
     this.layout.getRoot().bringToTop(mv.container)
+    this.sound.playPickUp()
   }
 
   private onPhase2PointerMove(p: Phaser.Input.Pointer): void {
@@ -746,6 +860,7 @@ export class TileInteraction {
     const onDone = () => {
       done++
       if (done === 2) {
+        this.sound.playSlotted()
         this.phase2Swapping = false
         this.validateCategories()
       }
@@ -781,6 +896,9 @@ export class TileInteraction {
       const row = this.slots[mv.slotIndex].row
       rows[row - 1].push(mv)
     }
+
+    type Pending = { row: MergedVisual[], tex: string, categoryTex: string, categoryName: string, words: string[] }
+    const toAnimate: Pending[] = []
     for (let r = 0; r < 2; r++) {
       const row = rows[r].sort((a, b) => a.slotIndex - b.slotIndex)
       if (row.length !== 3) continue
@@ -792,7 +910,14 @@ export class TileInteraction {
       const categoryTex = r === 0 ? TEX.blueCategoryTile : TEX.greenCategoryTile
       const categoryName = allSky ? 'THE SKY' : 'FRUITS'
       const words = row.map(mv => mv.word)
-      this.playSnakeAnimation(row, tex, categoryTex, categoryName, words)
+      toAnimate.push({ row, tex, categoryTex, categoryName, words })
+    }
+
+    this.pendingCategoryBars = toAnimate.length
+    this.completedBarDesignYs = []
+
+    for (const p of toAnimate) {
+      this.playSnakeAnimation(p.row, p.tex, p.categoryTex, p.categoryName, p.words)
     }
   }
 
@@ -837,7 +962,9 @@ export class TileInteraction {
 
     const cb: CategoryBar = {
       bar, title, words: wordsText, rowDesignY,
-      s: CATEGORY_BAR_START_SCALE_X_MULT
+      s: CATEGORY_BAR_START_SCALE_X_MULT,
+      jumpDY: 0,
+      tiles: row.slice()
     }
     this.categoryBars.push(cb)
     this.applyCategoryBar(cb)
@@ -852,6 +979,61 @@ export class TileInteraction {
       onUpdate: () => {
         cb.s = proxy.s
         this.applyCategoryBar(cb)
+      },
+      onComplete: () => {
+        const offY = this.layout.getSlotsYOffset()
+        this.completedBarDesignYs.push(cb.rowDesignY + offY)
+        if (this.pendingCategoryBars > 0 && this.completedBarDesignYs.length >= this.pendingCategoryBars) {
+          const sum = this.completedBarDesignYs.reduce((a, b) => a + b, 0)
+          const midY = sum / this.completedBarDesignYs.length
+          this.pendingCategoryBars = 0
+          this.completedBarDesignYs = []
+
+          this.playCategoryBarsJump(() => {
+            spawnConfettiBurst(this.scene, DESIGN_WIDTH / 2, midY)
+
+            if (!this.winFired && this.mergedVisuals.every(mv => mv.locked) && this.onWin) {
+              this.winFired = true
+              this.scene.time.delayedCall(WIN_AFTER_CONFETTI_DELAY, () => this.onWin?.())
+            }
+          })
+        }
+      }
+    })
+  }
+
+  private playCategoryBarsJump(onComplete: () => void): void {
+    const bars = this.categoryBars.slice()
+    if (bars.length === 0) { onComplete(); return }
+
+    // Hide the merged tiles + their slots beneath each bar so the jump doesn't
+    // expose them peeking out from below.
+    for (const cb of bars) {
+      for (const mv of cb.tiles) {
+        mv.container.setVisible(false)
+        this.slots[mv.slotIndex].image.setVisible(false)
+      }
+    }
+
+    const apply = (y: number) => {
+      for (const cb of bars) { cb.jumpDY = y; this.applyCategoryBar(cb) }
+    }
+    const proxy = { y: 0 }
+    this.scene.tweens.add({
+      targets: proxy,
+      y: -CATEGORY_JUMP_HEIGHT,
+      duration: CATEGORY_JUMP_UP_DURATION,
+      ease: 'Sine.easeOut',
+      onUpdate: () => apply(proxy.y),
+      onComplete: () => {
+        this.scene.tweens.add({
+          targets: proxy,
+          y: 0,
+          duration: CATEGORY_JUMP_DOWN_DURATION,
+          ease: 'Sine.easeIn',
+          onUpdate: () => apply(proxy.y),
+          onComplete: () => { apply(0); onComplete() }
+        })
       }
     })
   }

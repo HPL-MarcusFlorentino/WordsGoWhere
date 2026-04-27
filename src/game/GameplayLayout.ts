@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { TEX, FONT_FAMILY } from '../assets'
 import { DEPTH } from '../constants'
 import { sx, sy, sd } from '../utils/responsive'
+import type { SoundManager } from './SoundManager'
 
 type ImageSpec = { tex: string; x: number; y: number; w: number; h: number }
 
@@ -137,7 +138,7 @@ export class GameplayLayout {
   private tileContainerDesignYOffset = 0
   private tileContainerAlpha = 1
 
-  constructor(private scene: Phaser.Scene) {
+  constructor(private scene: Phaser.Scene, private sound: SoundManager) {
     this.root = scene.add.container(0, 0).setDepth(DEPTH.GAME).setAlpha(0)
 
     this.movesGroup = scene.add.container(0, 0)
@@ -307,6 +308,7 @@ export class GameplayLayout {
         this.relayout()
       },
       onComplete: () => {
+        this.sound.playTileFall()
         // Squash on impact, then return to rest
         const sq = { x: 1, y: 1 }
         this.scene.tweens.add({
@@ -386,6 +388,16 @@ export class GameplayLayout {
         this.relayout()
         onUpdate?.()
       },
+      onComplete
+    })
+  }
+
+  fadeOut(duration = 500, onComplete?: () => void): void {
+    this.scene.tweens.add({
+      targets: this.root,
+      alpha: 0,
+      duration,
+      ease: 'Sine.easeIn',
       onComplete
     })
   }
