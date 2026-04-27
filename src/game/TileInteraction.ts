@@ -241,7 +241,13 @@ export class TileInteraction {
   private checkOutOfMoves(): void {
     if (this.failFired || this.winFired) return
     if (this.layout.getMovesRemaining() > 0) return
-    if (this.occupiedSlots.size === this.slots.length) return
+    if (this.phase2Enabled) {
+      // Phase 2: all slots are always filled; the win gate is every merged tile locked.
+      if (this.mergedVisuals.every(mv => mv.locked)) return
+    } else {
+      // Phase 1: filling all slots = phase 1 complete (handled separately), not a fail.
+      if (this.occupiedSlots.size === this.slots.length) return
+    }
     this.failFired = true
     this.onPhaseFailed?.()
   }
@@ -919,6 +925,11 @@ export class TileInteraction {
     this.pendingCategoryBars = toAnimate.length
     this.completedBarDesignYs = []
 
+    if (toAnimate.length === 0) {
+      this.checkOutOfMoves()
+      return
+    }
+
     for (const p of toAnimate) {
       this.playSnakeAnimation(p.row, p.tex, p.categoryTex, p.categoryName, p.words)
     }
@@ -998,6 +1009,8 @@ export class TileInteraction {
             if (!this.winFired && this.mergedVisuals.every(mv => mv.locked) && this.onWin) {
               this.winFired = true
               this.scene.time.delayedCall(WIN_AFTER_CONFETTI_DELAY, () => this.onWin?.())
+            } else {
+              this.checkOutOfMoves()
             }
           })
         }
