@@ -2,7 +2,7 @@ export const DESIGN_WIDTH = 1080
 export const DESIGN_HEIGHT = 1920
 
 export const STORE_URL_IOS = 'https://apps.apple.com/'
-export const STORE_URL_ANDROID = 'https://play.google.com/store/apps/'
+export const STORE_URL_ANDROID = 'https://play.google.com/store/apps/details?id=com.thrivegames.wordgowhere'
 
 export const DEPTH = {
   BG: 0,
